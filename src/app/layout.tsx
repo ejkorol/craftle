@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Providers } from "./providers";
-import { inter, mononokiFont, karnakPro } from "./fonts";
+import { Providers } from "@/providers/providers";
+import { inter, mononokiFont, karnakPro } from "@/utils/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${inter.className} ${mononokiFont.variable} ${karnakPro.variable}`}>
         <Providers>
           {children}
