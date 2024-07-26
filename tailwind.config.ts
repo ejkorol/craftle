@@ -22,6 +22,16 @@ const config: Config = {
   darkMode: "class",
   plugins: [nextui({
     themes: {
+      dark: {
+        colors: {
+          background: '#212121',
+          foreground: '#FAFAFA',
+          primary: {
+            DEFAULT: '#FAFAFA',
+            foreground: '#212121'
+          }
+        }
+      },
       light: {
         colors: {
           background: '#FAFAFA',
