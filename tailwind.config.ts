@@ -9,7 +9,12 @@ const config: Config = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        serif: ['var(--font-karnak)'],
+        mono: ['var(--font-mononoki)']
+      }
+    },
   },
   darkMode: "class",
   plugins: [nextui()]
