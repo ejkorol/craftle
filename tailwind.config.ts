@@ -13,11 +13,27 @@ const config: Config = {
       fontFamily: {
         serif: ['var(--font-karnak)'],
         mono: ['var(--font-mononoki)']
+      },
+      colors: {
+        white: '#FAFAFA'
       }
     },
   },
   darkMode: "class",
-  plugins: [nextui()]
+  plugins: [nextui({
+    themes: {
+      light: {
+        colors: {
+          background: '#FAFAFA',
+          foreground: '#212121',
+          primary: {
+            DEFAULT: '#212121',
+            foreground: '#FAFAFA'
+          }
+        }
+      }
+    }
+  })]
 };
 
 export default config;
