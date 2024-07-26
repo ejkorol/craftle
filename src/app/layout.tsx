@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
-import { inter, mononokiFont, karnakPro } from "./fonts";
+import { inter, mononokiFont, karnakPro } from "@/utils/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
