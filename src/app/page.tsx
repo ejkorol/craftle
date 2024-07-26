@@ -2,7 +2,7 @@
 
 import { useTheme } from "@/utils/hooks/useTheme";
 import { Button } from "@nextui-org/react";
-import CraftleLogo from "@/app/components/craftleLogo";
+import CraftleLogo from "@/app/components/CraftleLogo";
 import { motion } from "framer-motion";
 
 const Home = () => {
