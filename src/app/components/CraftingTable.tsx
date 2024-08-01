@@ -5,6 +5,7 @@ import RecipeTries from "./RecipeTries";
 import { useDisclosure, Button } from "@nextui-org/react";
 import InventoryModal from "./InventoryModal";
 import RecipeSuccess from "./RecipeSuccess";
+import RecipeFailure from "./RecipeFailure";
 
 interface Item {
   id: number;
@@ -58,9 +59,11 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const recipeSuccess = useDisclosure();
+  const recipeFailure = useDisclosure();
 
   const [currentTry, setCurrentTry] = useState<number>(-1);
   const [isMatch, setIsMatch] = useState<boolean>(false);
+  const [isFailed, setIsFailed] = useState<boolean>(false);
   const [tries, setTries] = useState<Try[]>([
     { try: 1, success: null },
     { try: 2, success: null },
@@ -113,10 +116,9 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     setCraftingTable(updatedTable);
 
     if (exactMatch) {
-      setCurrentTry((prev) => (prev + 1) % tries.length);
       setTries((prevTries) =>
         prevTries.map((item, idx) =>
-          idx === currentTry ? { ...item, success: true } : item
+          idx === currentTry + 1 ? { ...item, success: true } : item
         )
       );
       recipeSuccess.onOpen();
@@ -136,7 +138,14 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       displayName: items[70].displayName,
       tries: currentTry + 2,
     });
+
     console.log(exactMatch ? "Recipe matches!" : "Recipe does not match.");
+
+    if (currentTry + 1 === 6) {
+      setIsFailed(true);
+      recipeFailure.onOpen();
+    };
+
     return exactMatch;
   };
 
@@ -190,15 +199,26 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           <div className="recipe__next" />
         </div>
         <div className="flex justify-center items-center mt-12">
-          <Button
-            className="font-medium text-md"
-            color="primary"
-            radius="lg"
-            variant="shadow"
-            onPress={handleCraft}
-          >
-            Craft
-          </Button>
+          {!isMatch && !isFailed ?
+            <Button
+              className="font-medium text-md"
+              color="primary"
+              radius="lg"
+              variant="shadow"
+              onPress={handleCraft}
+            >
+              Craft
+            </Button>
+            :
+            <Button
+              className="font-medium text-md"
+              color="primary"
+              radius="full"
+              variant="bordered"
+            >
+              Leaderboards
+            </Button>
+          }
         </div>
 
         <RecipeSuccess
@@ -206,6 +226,11 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onOpenChange={recipeSuccess.onOpenChange}
           onClose={recipeSuccess.onClose}
           data={data!}
+        />
+        <RecipeFailure
+          isOpen={recipeFailure.isOpen}
+          onOpenChange={recipeFailure.onOpenChange}
+          onClose={recipeFailure.onClose}
         />
         <InventoryModal
           onOpenChange={onOpenChange}
