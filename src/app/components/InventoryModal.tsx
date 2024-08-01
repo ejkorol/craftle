@@ -72,7 +72,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
           />
           <section className="flex gap-4">
             <main className="w-full">
-              <div className="flex flex-wrap justify-between gap-4 w-full h-[50vh] rounded-lg p-[16px]">
+              <div className="grid grid-cols-5 gap-4 place-items-center w-full max-h-[50vh] rounded-lg p-[16px]">
                 {filteredItems &&
                   filteredItems.map((item: Item) => (
                     <div
