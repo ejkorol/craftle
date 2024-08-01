@@ -8,8 +8,16 @@ export const useTheme = (theme = 'dark') => {
 
   useEffect(() => {
     setTheme(desiredTheme);
-  }, []);
+  }, [desiredTheme]);
 
-  return { setDesiredTheme }
+  const changeTheme = () => {
+    if (desiredTheme === 'dark') {
+      setDesiredTheme('light');
+    } else if (desiredTheme === 'light') {
+      setDesiredTheme('dark');
+    }
+  };
+
+  return { desiredTheme, setDesiredTheme, changeTheme };
 
 }

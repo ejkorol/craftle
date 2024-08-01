@@ -15,13 +15,33 @@ const config: Config = {
         mono: ['var(--font-mononoki)']
       },
       colors: {
-        white: '#FAFAFA'
+        white: '#FAFAFA',
+        black: '#212121'
       }
     },
   },
   darkMode: "class",
   plugins: [nextui({
     themes: {
+      dark: {
+        colors: {
+          background: '#212121',
+          foreground: '#FAFAFA',
+          primary: {
+            DEFAULT: '#FAFAFA',
+            foreground: '#212121'
+          },
+          secondary: {
+            DEFAULT: '#424242'
+          },
+          danger: {
+            DEFAULT: '#D14852'
+          },
+          success: {
+            DEFAULT: '#82E0AA'
+          }
+        }
+      },
       light: {
         colors: {
           background: '#FAFAFA',

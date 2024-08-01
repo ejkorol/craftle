@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.craftle-main {
+  @apply flex h-[90vh] w-full justify-center items-center
+};
+
+.tries {
+  @apply flex m-auto max-w-[288px] max-h-[288px] justify-between mb-12 items-center
+};
+
+.tries__failed {
+  @apply flex h-5 w-5 bg-danger rounded-md cursor-pointer
+};
+
+.tries__success {
+  @apply flex h-5 w-5 bg-success rounded-md
+};
+
+.tries__current {
+  @apply flex h-8 w-8 border-solid border-3 rounded-xl border-primary cursor-pointer;
+};
+
+.tries__unused {
+  @apply flex h-5 w-5 bg-secondary rounded-md
+}
+
+.crafting {
+  @apply flex flex-row justify-center items-center
+}
+
+.crafting__table {
+  @apply flex max-w-[288px] max-h-[288px] flex-col gap-6 justify-center items-center
+};
+
+.crafting__row {
+  @apply flex gap-6
+};
+
+.crafting__box {
+  @apply flex justify-center items-center border-solid border-3 border-secondary w-20 h-20 rounded-xl cursor-pointer hover:border-primary transition-all
+};
+
+.recipe__previous {
+  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer mr-16
+};
+
+.recipe__next {
+  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer ml-16
+}
