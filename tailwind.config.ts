@@ -15,7 +15,8 @@ const config: Config = {
         mono: ['var(--font-mononoki)']
       },
       colors: {
-        white: '#FAFAFA'
+        white: '#FAFAFA',
+        black: '#212121'
       }
     },
   },
@@ -29,6 +30,15 @@ const config: Config = {
           primary: {
             DEFAULT: '#FAFAFA',
             foreground: '#212121'
+          },
+          secondary: {
+            DEFAULT: '#424242'
+          },
+          danger: {
+            DEFAULT: '#D14852'
+          },
+          success: {
+            DEFAULT: '#82E0AA'
           }
         }
       },
