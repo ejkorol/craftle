@@ -38,7 +38,6 @@ const config = {
 };
 
 const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessProps) => {
-  console.log(data)
 
   const [isExploding, setIsExploding] = useState<boolean>(false);
 
