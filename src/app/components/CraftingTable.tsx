@@ -1,12 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
 import RecipeTries from "./RecipeTries";
-import { useDisclosure, Button } from "@nextui-org/react";
+import { useDisclosure, Button, Tooltip } from "@nextui-org/react";
 import InventoryModal from "./InventoryModal";
 import RecipeSuccess from "./RecipeSuccess";
 import RecipeFailure from "./RecipeFailure";
 import RecipeTryAttempt from "./RecipeAttempt";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+
+const animationVariants = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: { scale: 1, opacity: 1 },
+};
 
 interface Item {
   id: number;
@@ -17,6 +23,11 @@ interface Item {
   enchantCategories: any;
   repairWith: any;
   maxDurability: any;
+}
+
+interface FoundItem {
+  name: string;
+  image: string;
 }
 
 interface Recipe {
@@ -67,6 +78,8 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const recipeSuccess = useDisclosure();
   const recipeFailure = useDisclosure();
+
+  const [foundItems, setFoundItems] = useState<FoundItem[]>([]);
 
   const [currentTry, setCurrentTry] = useState<number>(-1);
   const [isMatch, setIsMatch] = useState<boolean>(false);
@@ -121,6 +134,38 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     );
 
     setCraftingTable(updatedTable);
+
+    // Correct
+    const correctItems = craftingTable.flat().filter((box, index) => {
+      const recipeItem = flattenRecipe[index];
+      return box && box.name === recipeItem;
+    });
+    console.log("Correct items:", correctItems.map(item => ({ name: item?.name, image: item?.image })));
+
+    // Partials
+    const includedItems = craftingTable.flat().filter((box): box is RecipeAttempt => box !== null && box.name !== null && flattenRecipe.includes(box.name));
+    console.log("Included items in the recipe:", includedItems.map(item => ({ name: item.name, image: item.image })));
+
+    includedItems.forEach((item) => {
+      if (item && item.name && item.image) {
+        const found: FoundItem = {
+          name: item.name,
+          image: item.image
+        };
+
+      setFoundItems((prevItems) => {
+        const itemExists = prevItems.some(existingItem =>
+          existingItem.name === found.name && existingItem.image === found.image
+        );
+
+        if (!itemExists) {
+          return [...prevItems, found];
+        }
+
+          return prevItems;
+        });
+      }
+    });
 
     if (exactMatch) {
       setTries((prevTries) =>
@@ -177,7 +222,8 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   };
 
   return (
-    <main className="flex h-[90vh] w-full justify-center items-center">
+    <main className="flex flex-col h-[90vh] w-full justify-center items-center">
+      <section className="flex w-full justify-center items-center">
       <div className="w-[212px] mr-16 flex justify-end">
         <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
       </div>
@@ -217,7 +263,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
               variant="shadow"
               onPress={handleCraft}
             >
-              Craft
+              {`Craft -->`}
             </Button>
             :
             <Button
@@ -251,9 +297,32 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
         />
       </section>
       <div className="w-[212px] ml-16 flex justify-start">
-        {/* PLACEHOLDER */}
         <div className="recipe__next" />
       </div>
+    </section>
+      <section className="absolute bottom-0 mb-32">
+        {foundItems.length !== 0 && (
+          foundItems.map((item, idx) => (
+            <motion.div
+              key={idx} 
+              variants={animationVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.3 }}
+              className="w-[60px] h-[60px] bg-secondary rounded-lg flex items-center justify-center cursor-pointer hover:shadow-2xl"
+            >
+            <Tooltip content={item.name}>
+              <img
+                height={30}
+                width={30}
+                src={`http://minecraft-api.minko.industries${item.image}`}
+                alt="test"
+              />
+              </Tooltip>
+            </motion.div>
+          ))
+        )}
+      </section>
     </main>
   );
 };
