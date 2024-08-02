@@ -38,7 +38,6 @@ const config = {
 };
 
 const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessProps) => {
-  console.log(data)
 
   const [isExploding, setIsExploding] = useState<boolean>(false);
 
@@ -68,7 +67,7 @@ const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessPro
             <Confetti active={isExploding} config={config} />
             <Image isBlurred src={`http://minecraft-api.minko.industries${data.image}`} alt={data.displayName} width={100} height={100} />
             <h1 className="text-4xl font-serif font-bold tracking-wide my-10">{data.displayName}</h1>
-            <h3 className="text-3xl font-serif font-medium tracking-normal">You crafted it in just<br/>{data.tries} recipes!</h3>
+            <h3 className="text-3xl font-serif font-medium tracking-normal">You crafted it in just<br/>{data.tries} {data.tries === 1 ? 'recipe' : 'recipes'}!</h3>
             <Button
               onPress={onClose}
               className="my-10 text-xl font-light"

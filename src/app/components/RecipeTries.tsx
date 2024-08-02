@@ -11,7 +11,6 @@ interface Try {
 }
 
 const RecipeTries = ({ tries, currentTry }: RecipeTriesProps) => {
-  console.log(tries)
   return (
     <div className="tries">
       {tries.map((attempt, idx) => {

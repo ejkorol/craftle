@@ -7,7 +7,8 @@ import {
   ModalBody,
   Input,
   Button,
-  Tooltip
+  Tooltip,
+  Image
 } from "@nextui-org/react";
 import { Search, CircleX } from "lucide-react";
 
@@ -72,7 +73,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
           />
           <section className="flex gap-4">
             <main className="w-full">
-              <div className="flex flex-wrap justify-between gap-4 w-full h-[50vh] rounded-lg p-[16px]">
+              <div className="grid grid-cols-5 gap-4 place-items-center w-full max-h-[50vh] rounded-lg p-[16px]">
                 {filteredItems &&
                   filteredItems.map((item: Item) => (
                     <div
@@ -81,7 +82,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
                       onClick={() => onSelect(item)}
                     >
                       <Tooltip content={item.displayName} placement="top">
-                        <img
+                        <Image
                           height={30}
                           width={30}
                           src={`http://minecraft-api.minko.industries${item.image}`}

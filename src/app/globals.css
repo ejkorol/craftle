@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.craftle-main {
-  @apply flex h-[90vh] w-full justify-center items-center
-};
-
 .tries {
   @apply flex m-auto max-w-[288px] max-h-[288px] justify-between mb-12 items-center
 };
@@ -43,9 +39,9 @@
 };
 
 .recipe__previous {
-  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer mr-16
+  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer
 };
 
 .recipe__next {
-  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer ml-16
+  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer
 }
