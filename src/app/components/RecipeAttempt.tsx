@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 
 interface Attempt {
   try: number;
@@ -17,6 +18,11 @@ interface RecipeAttempt {
   borderColor?: string | null;
 };
 
+const popUpVariants = {
+  hidden: { scale: 0 },
+  visible: { scale: 1 },
+};
+
 const RecipeAttempt = ({ attempts, currentTry }: RecipeAttemptProps) => {
 
   console.log(attempts, currentTry);
@@ -28,7 +34,13 @@ const RecipeAttempt = ({ attempts, currentTry }: RecipeAttemptProps) => {
   };
 
   return (
-    <div className="grid gap-4">
+    <motion.div
+      className="grid gap-4"
+      variants={popUpVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+    >
       {attempts[currentTry].recipe.map((row, rowIdx) => (
         <div key={rowIdx} className="grid grid-cols-3 gap-4">
           {row.map((col, colIdx) => (
@@ -49,7 +61,7 @@ const RecipeAttempt = ({ attempts, currentTry }: RecipeAttemptProps) => {
           ))}
         </div>
       ))}
-    </div>
+    </motion.div>
   );
 }
 

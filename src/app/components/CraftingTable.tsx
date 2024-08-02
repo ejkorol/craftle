@@ -177,13 +177,13 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   };
 
   return (
-    <main className="craftle-main">
-      <section>
+    <main className="flex h-[90vh] w-full justify-center items-center">
+      <div className="w-[212px] mr-16 flex justify-end">
+        <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
+      </div>
+      <section className="">
         <RecipeTries tries={tries} currentTry={currentTry} />
         <div className="crafting">
-
-          <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
-
           <div className="crafting__table">
             {craftingTable.map((row, rowIndex) => (
               <div key={rowIndex} className="crafting__row">
@@ -207,7 +207,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
               </div>
             ))}
           </div>
-          <div className="recipe__next" />
         </div>
         <div className="flex justify-center items-center mt-12">
           {!isMatch && !isFailed ?
@@ -251,6 +250,10 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onSelect={handleSelect}
         />
       </section>
+      <div className="w-[212px] ml-16 flex justify-start">
+        {/* PLACEHOLDER */}
+        <div className="recipe__next" />
+      </div>
     </main>
   );
 };
