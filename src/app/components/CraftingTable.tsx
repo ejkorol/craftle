@@ -182,7 +182,13 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
         )
       );
       toast('Not quite!', {
-        icon: '🪚'
+        icon: '🪚',
+        style: {
+          border: '2px solid #fafafa',
+          padding: '16px',
+          backgroundColor: '#212121',
+          color: '#fafafa'
+        },
       });
       setCraftingTable(initialTable);
     };
