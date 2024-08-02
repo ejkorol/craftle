@@ -7,7 +7,8 @@ import {
   ModalBody,
   Input,
   Button,
-  Tooltip
+  Tooltip,
+  Image
 } from "@nextui-org/react";
 import { Search, CircleX } from "lucide-react";
 
@@ -81,7 +82,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
                       onClick={() => onSelect(item)}
                     >
                       <Tooltip content={item.displayName} placement="top">
-                        <img
+                        <Image
                           height={30}
                           width={30}
                           src={`http://minecraft-api.minko.industries${item.image}`}
