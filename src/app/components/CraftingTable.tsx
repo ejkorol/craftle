@@ -1,11 +1,12 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import RecipeTries from "./RecipeTries";
 import { useDisclosure, Button } from "@nextui-org/react";
 import InventoryModal from "./InventoryModal";
 import RecipeSuccess from "./RecipeSuccess";
 import RecipeFailure from "./RecipeFailure";
+import RecipeTryAttempt from "./RecipeAttempt";
+import toast from "react-hot-toast";
 
 interface Item {
   id: number;
@@ -31,12 +32,18 @@ interface Recipe {
 interface CraftingTableProps {
   items: Item[];
   recipe: Recipe[];
-  recipeItem: Item;
+}
+
+interface RecipeAttempt {
+  name: string | null;
+  image: string | null;
+  borderColor?: string | null;
 }
 
 interface Try {
   try: number;
-  success: null | boolean;
+  success: boolean | null;
+  recipe: any;
 }
 
 interface Data {
@@ -47,13 +54,13 @@ interface Data {
 }
 
 const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
-  const initialTable: ({ name: string; image: string; borderColor?: string } | null)[][] = [
+  const initialTable: (RecipeAttempt | null)[][] = [
     [null, null, null],
     [null, null, null],
     [null, null, null],
   ];
 
-  const [craftingTable, setCraftingTable] = useState(initialTable);
+  const [craftingTable, setCraftingTable] = useState<(RecipeAttempt | null)[][]>(initialTable);
   const [selectedSquare, setSelectedSquare] = useState({ row: 0, col: 0 });
   const [data, setData] = useState<Data | null>(null);
 
@@ -65,12 +72,12 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const [isMatch, setIsMatch] = useState<boolean>(false);
   const [isFailed, setIsFailed] = useState<boolean>(false);
   const [tries, setTries] = useState<Try[]>([
-    { try: 1, success: null },
-    { try: 2, success: null },
-    { try: 3, success: null },
-    { try: 4, success: null },
-    { try: 5, success: null },
-    { try: 6, success: null },
+    { try: 1, success: null, recipe: null },
+    { try: 2, success: null, recipe: null },
+    { try: 3, success: null, recipe: null },
+    { try: 4, success: null, recipe: null },
+    { try: 5, success: null, recipe: null },
+    { try: 6, success: null, recipe: null },
   ]);
 
   useEffect(() => {
@@ -81,7 +88,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
         )
       );
     }
-  }, [currentTry, tries.length]);
+  }, [currentTry]);
 
   const handleCraft = () => {
     const currentRecipe = recipe[0].recipe;
@@ -94,7 +101,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       setCurrentTry((prev) => (prev + 1) % tries.length);
       setTries((prevTries) =>
         prevTries.map((item, idx) =>
-          idx === currentTry ? { ...item, success: false } : item
+          idx === currentTry ? { ...item, success: false, recipe: craftingTable } : item
         )
       );
       return;
@@ -118,7 +125,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     if (exactMatch) {
       setTries((prevTries) =>
         prevTries.map((item, idx) =>
-          idx === currentTry + 1 ? { ...item, success: true } : item
+          idx === currentTry + 1 ? { ...item, success: true, recipe: craftingTable } : item
         )
       );
       recipeSuccess.onOpen();
@@ -126,10 +133,14 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       setCurrentTry((prev) => (prev + 1) % tries.length);
       setTries((prevTries) =>
         prevTries.map((item, idx) =>
-          idx === currentTry ? { ...item, success: false } : item
+          idx === currentTry + 1 ? { ...item, success: false, recipe: craftingTable } : item
         )
       );
-    }
+      toast('Not quite!', {
+        icon: '🪚'
+      });
+      setCraftingTable(initialTable);
+    };
 
     setIsMatch(exactMatch);
     setData({
@@ -138,8 +149,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       displayName: items[70].displayName,
       tries: currentTry + 2,
     });
-
-    console.log(exactMatch ? "Recipe matches!" : "Recipe does not match.");
 
     if (currentTry + 1 === 6) {
       setIsFailed(true);
@@ -172,7 +181,9 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       <section>
         <RecipeTries tries={tries} currentTry={currentTry} />
         <div className="crafting">
-          <div className="recipe__previous" />
+
+          <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
+
           <div className="crafting__table">
             {craftingTable.map((row, rowIndex) => (
               <div key={rowIndex} className="crafting__row">
