@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 interface Attempt {
   try: number;
@@ -9,7 +10,7 @@ interface Attempt {
 
 interface RecipeAttemptProps {
   attempts: Attempt[];
-  currentTry: number
+  currentTry: number;
 };
 
 interface RecipeAttempt {
@@ -24,8 +25,11 @@ const popUpVariants = {
 };
 
 const RecipeAttempt = ({ attempts, currentTry }: RecipeAttemptProps) => {
+  const [animationKey, setAnimationKey] = useState<number>(0);
 
-  console.log(attempts, currentTry);
+  useEffect(() => {
+    setAnimationKey(prevKey => prevKey + 1);
+  }, [attempts, currentTry]);
 
   if (currentTry === -1) {
     return (
@@ -36,6 +40,7 @@ const RecipeAttempt = ({ attempts, currentTry }: RecipeAttemptProps) => {
   return (
     <motion.div
       className="grid gap-4"
+      key={animationKey}
       variants={popUpVariants}
       initial="hidden"
       animate="visible"
