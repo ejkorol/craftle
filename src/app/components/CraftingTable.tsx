@@ -230,7 +230,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   return (
     <main className="flex flex-col h-[90vh] w-full justify-center items-center">
       <section className="flex w-full justify-center items-center">
-      <div className="w-[212px] mr-16 flex justify-end">
+      <div className="hidden md:flex w-[212px] mr-16 justify-end">
         <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
       </div>
       <section className="">
@@ -302,7 +302,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onSelect={handleSelect}
         />
       </section>
-      <div className="w-[212px] ml-16 flex justify-start">
+      <div className="hidden md:flex w-[212px] ml-16 justify-start">
         <div className="recipe__next" />
       </div>
     </section>
