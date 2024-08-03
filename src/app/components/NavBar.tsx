@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import {
   ChartColumnBig,
   CircleHelp,
   SunDim,
-  Menu
+  Menu,
 } from "lucide-react";
 import { useTheme } from "@/utils/hooks/useTheme";
 
@@ -16,7 +16,12 @@ const NavBar = () => {
   return (
     <nav className="flex justify-between item-center px-8 py-6 border-b-2 border-solid border-secondary">
       <div>
-        <h3 className="text-5xl font-serif font-medium select-none cursor-pointer hover:text-secondary transition-all">Craftle</h3>
+        <Link
+          href="/"
+          className="text-5xl font-serif font-medium select-none cursor-pointer hover:text-secondary transition-all"
+        >
+          Craftle
+        </Link>
       </div>
       <div className="hidden md:flex">
         <div className="flex gap-6">

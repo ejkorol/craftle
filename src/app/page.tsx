@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/utils/hooks/useTheme";
-import { Button } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import CraftleLogo from "@/app/components/CraftleLogo";
 import { motion } from "framer-motion";
 
@@ -76,6 +76,8 @@ const Home = () => {
               </motion.div>
               <motion.div variants={fadeVariants}>
                 <Button
+                  href="/craftle"
+                  as={Link}
                   className="w-40"
                   radius="full"
                   variant="shadow"
