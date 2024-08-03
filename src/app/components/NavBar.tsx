@@ -96,6 +96,8 @@ const NavBar = () => {
             className="border-primary hover:bg-primary hover:text-black transition-all"
             size="lg"
             variant="bordered"
+            href="/signin"
+            as={Link}
           >
             Subscribe
           </Button>
@@ -118,6 +120,8 @@ const NavBar = () => {
               className="border-primary hover:bg-primary hover:text-black transition-all"
               size="lg"
               variant="bordered"
+              href="/signin"
+              as={Link}
             >
               Subscribe
             </Button>
