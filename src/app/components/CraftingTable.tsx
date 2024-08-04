@@ -104,14 +104,17 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     }
   }, [currentTry]);
 
-  const calculatePercentage = (table: (RecipeAttempt | null)[][], recipe: string[][][]) => {
-    const flattenTable = table.flat().map((item) => item?.name || "");
-    const flattenRecipe = recipe.flat().flat();
+  const calculatePercentage = (craftingTable: (RecipeAttempt | null)[][], currentRecipe: string[][][]) => {
+    const flattenTable = craftingTable.flat().map((item) => item?.name || "");
+    const flattenRecipe = currentRecipe.flat().flat();
 
-    const correctCount = flattenTable.filter((item, index) => item === flattenRecipe[index]).length;
+    const correctCount = flattenTable.reduce((count, item, index) => {
+        return item === flattenRecipe[index] ? count + 1 : count;
+    }, 0);
+
     const percentage = (correctCount / flattenRecipe.length) * 100;
 
-    return percentage;
+    return Math.round(percentage * 100) / 100;
   };
 
   const handleCraft = () => {
