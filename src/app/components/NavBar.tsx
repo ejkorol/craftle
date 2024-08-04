@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import TodaysHintModal from "./TodaysHintModal";
+import LeaderboardModal from "./LeaderboardModal";
 
 import { useTheme } from "@/utils/hooks/useTheme";
 
@@ -27,6 +28,7 @@ const NavBar = () => {
 
   const { changeTheme } = useTheme('dark');
   const hintModal = useDisclosure();
+  const leaderboardModal = useDisclosure();
 
   return (
     <>
@@ -64,6 +66,7 @@ const NavBar = () => {
             size="lg"
             variant="light"
             isIconOnly
+            onPress={() => leaderboardModal.onOpen()}
           >
             <ChartColumnBig
               size={40}
@@ -142,6 +145,11 @@ const NavBar = () => {
         isOpen={hintModal.isOpen}
         onClose={hintModal.onClose}
         onOpenChange={hintModal.onOpenChange}
+      />
+      <LeaderboardModal
+        isOpen={leaderboardModal.isOpen}
+        onClose={leaderboardModal.onClose}
+        onOpenChange={leaderboardModal.onOpenChange}
       />
     </>
   );
