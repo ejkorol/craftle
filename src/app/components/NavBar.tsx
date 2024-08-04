@@ -9,7 +9,8 @@ import {
   NavbarContent,
   NavbarMenuToggle,
   NavbarMenu,
-  NavbarMenuItem
+  NavbarMenuItem,
+  useDisclosure
 } from "@nextui-org/react";
 
 import {
@@ -18,14 +19,18 @@ import {
   SunDim
 } from "lucide-react";
 
+import TodaysHintModal from "./TodaysHintModal";
+
 import { useTheme } from "@/utils/hooks/useTheme";
 
 const NavBar = () => {
 
   const { changeTheme } = useTheme('dark');
+  const hintModal = useDisclosure();
 
   return (
-   <Navbar disableAnimation isBordered maxWidth="full" height={`6rem`}>
+    <>
+    <Navbar disableAnimation isBordered maxWidth="full" height={`6rem`}>
       <NavbarContent className="sm:hidden" justify="start">
         <NavbarMenuToggle />
       </NavbarContent>
@@ -71,6 +76,7 @@ const NavBar = () => {
             size="lg"
             variant="light"
             isIconOnly
+            onPress={() => hintModal.onOpen()}
           >
             <CircleHelp
               size={40}
@@ -132,6 +138,12 @@ const NavBar = () => {
         </section>
       </NavbarMenu>
     </Navbar>
+      <TodaysHintModal
+        isOpen={hintModal.isOpen}
+        onClose={hintModal.onClose}
+        onOpenChange={hintModal.onOpenChange}
+      />
+    </>
   );
 }
 
