@@ -1,9 +1,10 @@
 "use client";
 
 import { useTheme } from "@/utils/hooks/useTheme";
-import { Button } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import CraftleLogo from "@/app/components/CraftleLogo";
 import { motion } from "framer-motion";
+import TodaysDate from "./components/TodaysDate";
 
 const Home = () => {
   useTheme('light');
@@ -21,6 +22,11 @@ const Home = () => {
   const fadeVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5, ease: "easeInOut" } },
+  };
+
+  const dateVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.5, ease: "easeInOut", delay: 3.5 } },
   };
 
   return (
@@ -66,16 +72,8 @@ const Home = () => {
               </motion.div>
               <motion.div variants={fadeVariants}>
                 <Button
-                  className="border-primary w-40 hover:bg-primary hover:text-white"
-                  radius="full"
-                  variant="bordered"
-                  color="primary"
-                >
-                  Log in
-                </Button>
-              </motion.div>
-              <motion.div variants={fadeVariants}>
-                <Button
+                  href="/craftle"
+                  as={Link}
                   className="w-40"
                   radius="full"
                   variant="shadow"
@@ -84,6 +82,9 @@ const Home = () => {
                   Play
                 </Button>
               </motion.div>
+            </motion.div>
+            <motion.div className="mt-16" variants={dateVariants}>
+              <TodaysDate />
             </motion.div>
           </motion.div>
         </motion.div>

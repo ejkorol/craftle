@@ -16,19 +16,24 @@ const RecipeTries = ({ tries, currentTry }: RecipeTriesProps) => {
       {tries.map((attempt, idx) => {
         let className = "";
 
-        if (attempt.success === true) {
-          className = "tries__success"
-        } else if (attempt.success === false) {
-          className = "tries__failed";
-        } else if (attempt.success === null) {
-          className = "tries__unused";
-        } else if (idx === currentTry) {
-          className = "tries__current"
+        switch (true) {
+          case idx === currentTry + 1:
+            className = "tries__current";
+            break;
+          case attempt.success === true:
+            className = "tries__success";
+            break;
+          case attempt.success === false:
+            className = "tries__failed";
+            break;
+          case attempt.success === null:
+            className = "tries__unused";
+            break;
+          default:
+            className = "";
         }
 
-        return (
-          <div key={attempt.try} className={className} />
-        );
+        return <div key={attempt.try} className={className} />;
       })}
     </div>
   );

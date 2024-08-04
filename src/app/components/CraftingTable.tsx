@@ -8,6 +8,7 @@ import RecipeFailure from "./RecipeFailure";
 import RecipeTryAttempt from "./RecipeAttempt";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { StatsModal } from "./StatsModal";
 
 const animationVariants = {
   hidden: { scale: 0.8, opacity: 0 },
@@ -55,6 +56,7 @@ interface Try {
   try: number;
   success: boolean | null;
   recipe: any;
+  percentage: number;
 }
 
 interface Data {
@@ -78,6 +80,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const recipeSuccess = useDisclosure();
   const recipeFailure = useDisclosure();
+  const statsModal = useDisclosure();
 
   const [foundItems, setFoundItems] = useState<FoundItem[]>([]);
 
@@ -85,12 +88,12 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const [isMatch, setIsMatch] = useState<boolean>(false);
   const [isFailed, setIsFailed] = useState<boolean>(false);
   const [tries, setTries] = useState<Try[]>([
-    { try: 1, success: null, recipe: null },
-    { try: 2, success: null, recipe: null },
-    { try: 3, success: null, recipe: null },
-    { try: 4, success: null, recipe: null },
-    { try: 5, success: null, recipe: null },
-    { try: 6, success: null, recipe: null },
+    { try: 1, success: null, recipe: null, percentage: 0 },
+    { try: 2, success: null, recipe: null, percentage: 0 },
+    { try: 3, success: null, recipe: null, percentage: 0 },
+    { try: 4, success: null, recipe: null, percentage: 0 },
+    { try: 5, success: null, recipe: null, percentage: 0 },
+    { try: 6, success: null, recipe: null, percentage: 0 },
   ]);
 
   useEffect(() => {
@@ -103,6 +106,19 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     }
   }, [currentTry]);
 
+  const calculatePercentage = (craftingTable: (RecipeAttempt | null)[][], currentRecipe: string[][][]) => {
+    const flattenTable = craftingTable.flat().map((item) => item?.name || "");
+    const flattenRecipe = currentRecipe.flat().flat();
+
+    const correctCount = flattenTable.reduce((count, item, index) => {
+        return item === flattenRecipe[index] ? count + 1 : count;
+    }, 0);
+
+    const percentage = (correctCount / flattenRecipe.length) * 100;
+
+    return Math.round(percentage * 100) / 100;
+  };
+
   const handleCraft = () => {
     const currentRecipe = recipe[0].recipe;
 
@@ -114,7 +130,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       setCurrentTry((prev) => (prev + 1) % tries.length);
       setTries((prevTries) =>
         prevTries.map((item, idx) =>
-          idx === currentTry ? { ...item, success: false, recipe: craftingTable } : item
+          idx === currentTry ? { ...item, success: false, recipe: craftingTable, percentage: 0 } : item
         )
       );
       return;
@@ -134,6 +150,17 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     );
 
     setCraftingTable(updatedTable);
+
+    const percentage = calculatePercentage(craftingTable, currentRecipe);
+
+    // Update tries with percentage
+    setTries((prevTries) =>
+      prevTries.map((item, idx) =>
+        idx === currentTry
+          ? { ...item, success: exactMatch, recipe: craftingTable, percentage }
+          : item
+      )
+    );
 
     // Correct
     const correctItems = craftingTable.flat().filter((box, index) => {
@@ -195,13 +222,14 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
     setIsMatch(exactMatch);
     setData({
-      image: items[70].image,
-      name: items[70].name,
-      displayName: items[70].displayName,
+      image: recipe[0].name,
+      name: recipe[0].name,
+      displayName: recipe[0].displayName,
       tries: currentTry + 2,
     });
 
-    if (currentTry + 1 === 6) {
+    console.log(currentTry)
+    if (currentTry + 2 === 6) {
       setIsFailed(true);
       recipeFailure.onOpen();
     };
@@ -230,7 +258,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   return (
     <main className="flex flex-col h-[90vh] w-full justify-center items-center">
       <section className="flex w-full justify-center items-center">
-      <div className="w-[212px] mr-16 flex justify-end">
+      <div className="hidden md:flex w-[212px] mr-16 justify-end">
         <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
       </div>
       <section className="">
@@ -261,6 +289,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           </div>
         </div>
         <div className="flex justify-center items-center mt-12">
+            <Button onPress={() => statsModal.onOpen()}>Test</Button>
           {!isMatch && !isFailed ?
             <Button
               className="font-medium text-md"
@@ -301,8 +330,13 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           items={items}
           onSelect={handleSelect}
         />
+        <StatsModal
+          isOpen={statsModal.isOpen}
+          onClose={statsModal.onClose}
+          onOpenChange={statsModal.onOpenChange}
+        />
       </section>
-      <div className="w-[212px] ml-16 flex justify-start">
+      <div className="hidden md:flex w-[212px] ml-16 justify-start">
         <div className="recipe__next" />
       </div>
     </section>
