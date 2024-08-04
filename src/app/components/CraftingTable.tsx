@@ -201,7 +201,8 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       tries: currentTry + 2,
     });
 
-    if (currentTry + 1 === 6) {
+    console.log(currentTry)
+    if (currentTry + 2 === 6) {
       setIsFailed(true);
       recipeFailure.onOpen();
     };
