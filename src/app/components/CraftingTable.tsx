@@ -8,6 +8,7 @@ import RecipeFailure from "./RecipeFailure";
 import RecipeTryAttempt from "./RecipeAttempt";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { StatsModal } from "./StatsModal";
 
 const animationVariants = {
   hidden: { scale: 0.8, opacity: 0 },
@@ -79,6 +80,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const recipeSuccess = useDisclosure();
   const recipeFailure = useDisclosure();
+  const statsModal = useDisclosure();
 
   const [foundItems, setFoundItems] = useState<FoundItem[]>([]);
 
@@ -287,6 +289,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           </div>
         </div>
         <div className="flex justify-center items-center mt-12">
+            <Button onPress={() => statsModal.onOpen()}>Test</Button>
           {!isMatch && !isFailed ?
             <Button
               className="font-medium text-md"
@@ -326,6 +329,11 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onClose={onClose}
           items={items}
           onSelect={handleSelect}
+        />
+        <StatsModal
+          isOpen={statsModal.isOpen}
+          onClose={statsModal.onClose}
+          onOpenChange={statsModal.onOpenChange}
         />
       </section>
       <div className="hidden md:flex w-[212px] ml-16 justify-start">
