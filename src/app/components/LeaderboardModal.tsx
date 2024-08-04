@@ -17,6 +17,7 @@ import {
   TableColumn
 } from "@nextui-org/react";
 import NextImage from "next/image";
+import { useCallback } from "react";
 
 import { CircleX } from "lucide-react";
 
@@ -26,7 +27,74 @@ interface LeaderboardModalProps {
   onOpenChange: (isOpen: boolean) => void;
 }
 
+interface User {
+  id: string;
+  rank: number;
+  user: UserInfo;
+  average: number
+}
+
+interface UserInfo {
+  username: string;
+  name: string;
+  image: string;
+}
+
+const users = [
+  {
+    id: "123abcd",
+    rank: 1,
+    user: {
+      username: 'ejkorol',
+      name: 'Jason Korol',
+      image: 'https://avatars.githubusercontent.com/u/65996263?v=4'
+    },
+    average: 88
+  }
+]
+
+const columns = [
+  {
+    key: 'rank',
+    label: 'POSITION'
+  },
+  {
+    key: 'user',
+    label: 'USERNAME'
+  },
+  {
+    key: 'average',
+    label: 'AVG %'
+  }
+]
+
 const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalProps) => {
+
+  const renderCell = useCallback((item: User , columnKey: any) => {
+    switch (columnKey) {
+      case "rank":
+      return (
+        <h2 className="text-4xl">{`${item.rank}.`}</h2>
+      );
+      case "user":
+      return (
+        <>
+          <div>
+            <Avatar size="md" src={item.user.image} alt={item.user.name}/>
+          </div>
+          <div>
+            <h3 className="text-md">{item.user.name}</h3>
+            <p className="font-mono text-xs tracking-wide">{`@${item.user.username}`}</p>
+          </div>
+        </>
+      );
+      case "average":
+      return (
+        <p className="font-mono text-3xl tracking-wider">{`${item.average}%`}</p>
+      )
+    }
+  }, []);
+
   return (
     <Modal
       backdrop="blur"
@@ -51,7 +119,6 @@ const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalPro
         </ModalHeader>
         <ModalBody className="px-8">
           <section className="flex gap-6 items-center justify-between">
-
             <div className="flex flex-col gap-6 items-center">
               <Avatar size="md" />
               <Image
@@ -117,114 +184,19 @@ const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalPro
               removeWrapper
               isStriped
             >
-              <TableHeader>
-                <TableColumn>Position</TableColumn>
-                <TableColumn>Username</TableColumn>
-                <TableColumn>Avg %</TableColumn>
+              <TableHeader columns={columns}>
+                {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
               </TableHeader>
-              <TableBody>
-                <TableRow key="1">
-                  <TableCell className="w-1/6">
-                    <h2 className="text-4xl">4.</h2>
-                  </TableCell>
-                  <TableCell className="flex items-center gap-4 w-full">
-                    <div>
-                    <Avatar size="md"/>
-                    </div>
-                    <div>
-                    <h3 className="text-md">Jason Korol</h3>
-                    <p className="font-mono text-xs tracking-wide">@ejkorol</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-1/6">
-                    <p className="font-mono text-3xl tracking-wider">44%</p>
-                  </TableCell>
-                </TableRow>
-                <TableRow key="1">
-                  <TableCell className="w-1/6">
-                    <h2 className="text-4xl">4.</h2>
-                  </TableCell>
-                  <TableCell className="flex items-center gap-4 w-full">
-                    <div>
-                    <Avatar size="md"/>
-                    </div>
-                    <div>
-                    <h3 className="text-md">Jason Korol</h3>
-                    <p className="font-mono text-xs tracking-wide">@ejkorol</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-1/6">
-                    <p className="font-mono text-3xl tracking-wider">44%</p>
-                  </TableCell>
-                </TableRow>
-                <TableRow key="1">
-                  <TableCell className="w-1/6">
-                    <h2 className="text-4xl">4.</h2>
-                  </TableCell>
-                  <TableCell className="flex items-center gap-4 w-full">
-                    <div>
-                    <Avatar size="md"/>
-                    </div>
-                    <div>
-                    <h3 className="text-md">Jason Korol</h3>
-                    <p className="font-mono text-xs tracking-wide">@ejkorol</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-1/6">
-                    <p className="font-mono text-3xl tracking-wider">44%</p>
-                  </TableCell>
-                </TableRow>
-                <TableRow key="1">
-                  <TableCell className="w-1/6">
-                    <h2 className="text-4xl">4.</h2>
-                  </TableCell>
-                  <TableCell className="flex items-center gap-4 w-full">
-                    <div>
-                    <Avatar size="md"/>
-                    </div>
-                    <div>
-                    <h3 className="text-md">Jason Korol</h3>
-                    <p className="font-mono text-xs tracking-wide">@ejkorol</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-1/6">
-                    <p className="font-mono text-3xl tracking-wider">44%</p>
-                  </TableCell>
-                </TableRow>
-                <TableRow key="1">
-                  <TableCell className="w-1/6">
-                    <h2 className="text-4xl">4.</h2>
-                  </TableCell>
-                  <TableCell className="flex items-center gap-4 w-full">
-                    <div>
-                    <Avatar size="md"/>
-                    </div>
-                    <div>
-                    <h3 className="text-md">Jason Korol</h3>
-                    <p className="font-mono text-xs tracking-wide">@ejkorol</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-1/6">
-                    <p className="font-mono text-3xl tracking-wider">44%</p>
-                  </TableCell>
-                </TableRow>
-                <TableRow key="1">
-                  <TableCell className="w-1/6">
-                    <h2 className="text-4xl">4.</h2>
-                  </TableCell>
-                  <TableCell className="flex items-center gap-4 w-full">
-                    <div>
-                    <Avatar size="md"/>
-                    </div>
-                    <div>
-                    <h3 className="text-md">Jason Korol</h3>
-                    <p className="font-mono text-xs tracking-wide">@ejkorol</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-1/6">
-                    <p className="font-mono text-3xl tracking-wider">44%</p>
-                  </TableCell>
-                </TableRow>
+              <TableBody items={users}>
+                {item => (
+                  <TableRow key={item.id}>
+                    {columnKey => <TableCell className={[
+                      columnKey === 'rank' ? 'w-1/6' : null,
+                      columnKey === 'user' ? 'flex items-center gap-4 w-full' : null,
+                      columnKey === 'average' ? 'w-1/6' : null
+                    ].filter(Boolean).join('')}>{renderCell(item, columnKey)}</TableCell>}
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </section>
