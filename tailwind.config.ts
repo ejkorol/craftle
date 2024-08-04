@@ -38,7 +38,7 @@ const config: Config = {
             DEFAULT: '#D14852'
           },
           success: {
-            DEFAULT: '#82E0AA'
+            DEFAULT: '#5B8B32'
           }
         }
       },
