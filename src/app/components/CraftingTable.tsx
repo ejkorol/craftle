@@ -55,6 +55,7 @@ interface Try {
   try: number;
   success: boolean | null;
   recipe: any;
+  percentage: number;
 }
 
 interface Data {
@@ -85,12 +86,12 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const [isMatch, setIsMatch] = useState<boolean>(false);
   const [isFailed, setIsFailed] = useState<boolean>(false);
   const [tries, setTries] = useState<Try[]>([
-    { try: 1, success: null, recipe: null },
-    { try: 2, success: null, recipe: null },
-    { try: 3, success: null, recipe: null },
-    { try: 4, success: null, recipe: null },
-    { try: 5, success: null, recipe: null },
-    { try: 6, success: null, recipe: null },
+    { try: 1, success: null, recipe: null, percentage: 0 },
+    { try: 2, success: null, recipe: null, percentage: 0 },
+    { try: 3, success: null, recipe: null, percentage: 0 },
+    { try: 4, success: null, recipe: null, percentage: 0 },
+    { try: 5, success: null, recipe: null, percentage: 0 },
+    { try: 6, success: null, recipe: null, percentage: 0 },
   ]);
 
   useEffect(() => {
@@ -103,6 +104,16 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     }
   }, [currentTry]);
 
+  const calculatePercentage = (table: (RecipeAttempt | null)[][], recipe: string[][][]) => {
+    const flattenTable = table.flat().map((item) => item?.name || "");
+    const flattenRecipe = recipe.flat().flat();
+
+    const correctCount = flattenTable.filter((item, index) => item === flattenRecipe[index]).length;
+    const percentage = (correctCount / flattenRecipe.length) * 100;
+
+    return percentage;
+  };
+
   const handleCraft = () => {
     const currentRecipe = recipe[0].recipe;
 
@@ -114,7 +125,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       setCurrentTry((prev) => (prev + 1) % tries.length);
       setTries((prevTries) =>
         prevTries.map((item, idx) =>
-          idx === currentTry ? { ...item, success: false, recipe: craftingTable } : item
+          idx === currentTry ? { ...item, success: false, recipe: craftingTable, percentage: 0 } : item
         )
       );
       return;
@@ -134,6 +145,17 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     );
 
     setCraftingTable(updatedTable);
+
+    const percentage = calculatePercentage(craftingTable, currentRecipe);
+
+    // Update tries with percentage
+    setTries((prevTries) =>
+      prevTries.map((item, idx) =>
+        idx === currentTry
+          ? { ...item, success: exactMatch, recipe: craftingTable, percentage }
+          : item
+      )
+    );
 
     // Correct
     const correctItems = craftingTable.flat().filter((box, index) => {
@@ -195,9 +217,9 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
     setIsMatch(exactMatch);
     setData({
-      image: items[70].image,
-      name: items[70].name,
-      displayName: items[70].displayName,
+      image: recipe[0].name,
+      name: recipe[0].name,
+      displayName: recipe[0].displayName,
       tries: currentTry + 2,
     });
 
