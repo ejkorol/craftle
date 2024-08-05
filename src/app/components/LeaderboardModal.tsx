@@ -17,9 +17,11 @@ import {
   TableColumn
 } from "@nextui-org/react";
 import NextImage from "next/image";
-import { useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { CircleX } from "lucide-react";
+
+import { fetchTopPlayers, LeaderBoardEntry } from "./LeaderboardActions";
 
 interface LeaderboardModalProps {
   isOpen: boolean,
@@ -70,7 +72,71 @@ const columns = [
 
 const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalProps) => {
 
-  const renderCell = useCallback((item: User , columnKey: any) => {
+  const [topPlayers, setTopPlayers] = useState<LeaderBoardEntry[]>();
+
+  const getLeaderboard = async () => {
+    const players = await fetchTopPlayers();
+    setTopPlayers(players);
+  }
+
+  useEffect(() => {
+    getLeaderboard();
+  }, [])
+
+  interface Styles {
+    cardClasses: string;
+    imageSrc: string;
+    alt: string;
+    height: number;
+    width: number;
+    header: string;
+    avatar: "lg" | "md" | "sm";
+    username: string;
+    percentage: string;
+  }
+
+  const getLeaderboardStyles = (rank: 1 | 2 | 3): Styles => {
+    switch (rank) {
+      case (1):
+        return {
+          cardClasses: "flex flex-col gap-6 items-center order-2",
+          imageSrc: "/icons/first-icon.svg",
+          alt: "gold medal",
+          height: 150,
+          width: 150,
+          header: "text-xl font-medium",
+          avatar: "lg",
+          username: "font-mono text-md tracking-wide",
+          percentage: "font-mono text-secondary text-sm tracking-wider"
+        }
+      case (2):
+        return {
+          cardClasses: "flex flex-col gap-6 items-center order-1",
+          imageSrc: "/icons/second-icon.svg",
+          alt: "silver medal",
+          height: 100,
+          width: 100,
+          header: "text-lg font-medium",
+          avatar: "md",
+          username: "font-mono text-sm tracking-wide",
+          percentage: "font-mono text-secondary text-xs tracking-wider"
+        }
+      case (3):
+        return {
+          cardClasses: "flex flex-col gap-6 items-center order-3",
+          imageSrc: "/icons/third-icon.svg",
+          alt: "bronze medal",
+          height: 100,
+          width: 100,
+          header: "text-lg font-medium",
+          avatar: "md",
+          username: "font-mono text-sm tracking-wide",
+          percentage: "font-mono text-secondary text-xs tracking-wider"
+        }
+    }
+  };
+
+  const renderCell = useCallback((item: LeaderBoardEntry , columnKey: any) => {
     switch (columnKey) {
       case "rank":
       return (
@@ -80,7 +146,7 @@ const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalPro
       return (
         <>
           <div>
-            <Avatar size="md" src={item.user.image} alt={item.user.name}/>
+            <Avatar size="md" src={item.user.image !== null ? item.user.image : undefined} alt={item.user.name !== null ? item.user.name : 'avatar'}/>
           </div>
           <div>
             <h3 className="text-md">{item.user.name}</h3>
@@ -90,7 +156,7 @@ const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalPro
       );
       case "average":
       return (
-        <p className="font-mono text-3xl tracking-wider">{`${item.average}%`}</p>
+        <p className="font-mono text-3xl tracking-wider">{`${item.avg}%`}</p>
       )
     }
   }, []);
@@ -118,62 +184,31 @@ const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalPro
           </Button>
         </ModalHeader>
         <ModalBody className="px-8">
-          <section className="flex gap-6 items-center justify-between">
-            <div className="flex flex-col gap-6 items-center">
-              <Avatar size="md" />
-              <Image
-                src="/icons/second-icon.svg"
-                alt="gold medal"
-                as={NextImage}
-                height={100}
-                width={100}
-              />
-              <div className="text-center">
-                <h3 className="text-lg font-medium">John Doe</h3>
-                <p className="font-mono text-sm tracking-wide">@johndoe</p>
-                <p className="font-mono text-secondary text-xs tracking-wider">
-                  66%
-                </p>
-              </div>
-            </div>
+          <section 
+            className={topPlayers && topPlayers.slice(0, 3).length === 2 ? "flex gap-6 items-center justify-between" : "flex gap-6 items-center justify-center"}
+          >
 
-            <div className="flex flex-col gap-6 items-center">
-              <Avatar size="lg" />
-              <Image
-                isBlurred
-                src="/icons/first-icon.svg"
-                alt="gold medal"
-                as={NextImage}
-                height={150}
-                width={150}
-              />
-              <div className="text-center">
-                <h3 className="text-xl font-medium">Yam</h3>
-                <p className="font-mono text-md tracking-wide">@yamlovesyam</p>
-                <p className="font-mono text-secondary text-sm tracking-wider">
-                  81%
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-6 items-center">
-              <Avatar size="md" />
-              <Image
-                src="/icons/third-icon.svg"
-                alt="gold medal"
-                as={NextImage}
-                height={100}
-                width={100}
-              />
-              <div className="text-center">
-                <h3 className="text-lg font-medium">Jane Doe</h3>
-                <p className="font-mono text-sm tracking-wide">@janedoe</p>
-                <p className="font-mono text-secondary text-xs tracking-wider">
-                  33%
-                </p>
-              </div>
-            </div>
-
+            {topPlayers && topPlayers.slice(0, 3).map((player) => {
+              const styles = getLeaderboardStyles(player.rank as 1 | 2 | 3)
+                return (
+                  <div className={styles.cardClasses} key={player.userId}>
+                    <Avatar size={styles.avatar} src={player.user.image ?? undefined} alt={player.user.name ?? undefined} />
+                    <Image
+                      isBlurred
+                      src={styles?.imageSrc}
+                      alt={styles?.alt}
+                      as={NextImage}
+                      height={styles?.height}
+                      width={styles?.width}
+                    />
+                    <div className="text-center">
+                      <h3 className={styles?.header}>{player.user.name}</h3>
+                      <p className={styles?.username}>@{player.user.username}</p>
+                      <p className={styles?.percentage}>{player.avg}%</p>
+                    </div>
+                  </div>
+                );
+              })}
           </section>
 
           <Divider className="mt-6 mb-4" />
@@ -187,9 +222,9 @@ const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalPro
               <TableHeader columns={columns}>
                 {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
               </TableHeader>
-              <TableBody items={users}>
+              <TableBody items={topPlayers}>
                 {item => (
-                  <TableRow key={item.id}>
+                  <TableRow key={item.userId}>
                     {columnKey => <TableCell className={[
                       columnKey === 'rank' ? 'w-1/6' : null,
                       columnKey === 'user' ? 'flex items-center gap-4 w-full' : null,
