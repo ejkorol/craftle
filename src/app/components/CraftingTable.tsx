@@ -8,7 +8,6 @@ import RecipeTryAttempt from "./RecipeAttempt";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { StatsModal } from "./StatsModal";
-import { auth } from "@/lib/auth";
 import { getsession } from "./CraftingTableActions";
 
 const animationVariants = {

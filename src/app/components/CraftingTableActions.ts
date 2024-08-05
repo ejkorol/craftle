@@ -65,6 +65,8 @@ const updateUserRanks = async (): Promise<void> => {
 export const getsession = async (tries: Try[]): Promise<void> => {
   const session = await auth();
 
+  console.log(session)
+
   if (!session) return;
 
   const user = await db.user.findFirst({
