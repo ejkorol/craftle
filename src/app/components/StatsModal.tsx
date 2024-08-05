@@ -26,6 +26,17 @@ interface StatsModalProps {
   onClose: () => void;
   onOpenChange: (isOpen: boolean) => void;
   tries: Try[]
+  stats: Stats
+}
+
+interface Stats {
+  completed: boolean;
+  success: boolean;
+  tries: Try[];
+  gamesPlayed: number;
+  currentStreak: number;
+  bestStreak: number;
+  totalWon: number;
 }
 
 interface Try {
@@ -46,7 +57,9 @@ const columns = [
   }
 ]
 
-export const StatsModal = ({ isOpen, onClose, onOpenChange, tries }: StatsModalProps) => {
+export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: StatsModalProps) => {
+
+  console.log(stats)
 
   const getSliderColor = (percentage: number) => {
     if (percentage >= 0 && percentage < 15) {
@@ -130,19 +143,21 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries }: StatsModalP
             <h3 className="text-sm font-medium tracking-wide uppercase">statistics</h3>
             <div className="flex items-center justify-between my-4">
               <div className="flex flex-col gap-2 items-center">
-                <h4 className="text-6xl font-mono">1</h4>
+                <h4 className="text-6xl font-mono">{stats.gamesPlayed}</h4>
                 <p className="">played</p>
               </div>
               <div className="flex flex-col gap-2 items-center">
-                <h4 className="text-6xl font-mono">0</h4>
+                <h4 className="text-6xl font-mono">
+                  {stats.gamesPlayed > 0 ? Math.round((stats.totalWon / stats.gamesPlayed) * 100) : 0}
+                </h4>
                 <p className="">Win %</p>
               </div>
               <div className="flex flex-col gap-2 items-center">
-                <h4 className="text-6xl font-mono">1</h4>
+                <h4 className="text-6xl font-mono">{stats.currentStreak}</h4>
                 <p className="">Streak</p>
               </div>
               <div className="flex flex-col gap-2 items-center">
-                <h4 className="text-6xl font-mono">1</h4>
+                <h4 className="text-6xl font-mono">{stats.bestStreak}</h4>
                 <p className="">Best Streak</p>
               </div>
             </div>
