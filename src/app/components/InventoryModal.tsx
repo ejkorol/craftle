@@ -13,7 +13,7 @@ import {
 import { Search, CircleX, CircleSlash2, Trash } from "lucide-react";
 
 interface InventoryModalProps {
-  onSelect: (item: Item) => void;
+  onSelect: (item: Item | null) => void;
   items: Item[]
   isOpen: boolean;
   onClose: () => void;
