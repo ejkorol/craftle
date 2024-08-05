@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { auth } from "@/lib/auth";
 import db from "@/lib/db";
 
@@ -8,6 +9,26 @@ interface Try {
   success: boolean | null;
   recipe: any;
   percentage: number;
+}
+
+export const setCookie = async (success: boolean) => {
+
+  const d = new Date();
+  const fd = d.toISOString().split('T')[0];
+  cookies().set({
+    name: 'craftleDaily',
+    value: JSON.stringify({
+      date: fd,
+      success: success
+    }),
+    httpOnly: true,
+    path: '/'
+  })
+}
+
+export const getCookie = async () => {
+  const cookie = cookies().get('craftleDaily')
+  return cookie;
 }
 
 const calculateAveragePercentage = (tries: Try[]): number => {
