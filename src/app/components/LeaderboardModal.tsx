@@ -14,12 +14,14 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  TableColumn
+  TableColumn,
+  Link
 } from "@nextui-org/react";
 import NextImage from "next/image";
 import { useState, useEffect, useCallback } from "react";
+import { useSession } from "next-auth/react";
 
-import { CircleX } from "lucide-react";
+import { CircleX, ArrowUpRight } from "lucide-react";
 
 import { fetchTopPlayers, LeaderBoardEntry } from "./LeaderboardActions";
 
@@ -28,32 +30,6 @@ interface LeaderboardModalProps {
   onClose: () => void;
   onOpenChange: (isOpen: boolean) => void;
 }
-
-interface User {
-  id: string;
-  rank: number;
-  user: UserInfo;
-  average: number
-}
-
-interface UserInfo {
-  username: string;
-  name: string;
-  image: string;
-}
-
-const users = [
-  {
-    id: "123abcd",
-    rank: 1,
-    user: {
-      username: 'ejkorol',
-      name: 'Jason Korol',
-      image: 'https://avatars.githubusercontent.com/u/65996263?v=4'
-    },
-    average: 88
-  }
-]
 
 const columns = [
   {
@@ -73,6 +49,7 @@ const columns = [
 const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalProps) => {
 
   const [topPlayers, setTopPlayers] = useState<LeaderBoardEntry[]>();
+  const { data: session } = useSession();
 
   const getLeaderboard = async () => {
     const players = await fetchTopPlayers();
@@ -161,6 +138,52 @@ const LeaderboardModal = ({ isOpen, onClose, onOpenChange }: LeaderboardModalPro
     }
   }, []);
 
+  if (!session) {
+    return (
+      <Modal
+        backdrop="blur"
+        size="lg"
+        className="bg-dark"
+        shadow="lg"
+        hideCloseButton
+        scrollBehavior="inside"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
+        <ModalContent>
+          <ModalHeader className="flex items-center justify-between">
+            <h1 className="text-4xl font-medium py-4">Leaderboard</h1>
+            <Button
+              isIconOnly
+              variant="light"
+              onPress={onClose}
+            >
+              <CircleX height={30} width={30} className="text-primary" />
+            </Button>
+          </ModalHeader>
+          <ModalBody className="px-8 py-12">
+            <section className="flex flex-col items-center justify-center">
+              <h2 className="text-2xl font-medium">Sign in to see the leaderboards.</h2>
+            </section>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              className="text-lg font-medium" 
+              color="primary"
+              variant="shadow" 
+              as={Link} 
+              size="lg" 
+              radius="full" 
+              href='/signin'
+              endContent={ <ArrowUpRight width={30} height={30} className="light:text-primary dark:text-secondary" /> }
+            >
+              Sign in
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    )
+  }
   return (
     <Modal
       backdrop="blur"

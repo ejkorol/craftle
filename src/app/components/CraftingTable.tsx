@@ -8,12 +8,22 @@ import RecipeTryAttempt from "./RecipeAttempt";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { StatsModal } from "./StatsModal";
-import { auth } from "@/lib/auth";
-import { getsession } from "./CraftingTableActions";
+import { getsession, getCookie } from "./CraftingTableActions";
 
 const animationVariants = {
   hidden: { scale: 0.8, opacity: 0 },
   visible: { scale: 1, opacity: 1 },
+};
+
+const boxVariants = {
+  initial: { opacity: 0, scale: 0.6 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.8 },
+};
+
+const rowVariants = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1 } },
 };
 
 interface Item {
@@ -96,7 +106,74 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     { try: 6, success: null, recipe: null, percentage: 0 },
   ]);
 
+  const [dailyCompleted, setDailyCompleted] = useState({
+    completed: false,
+    success: false,
+    tries: tries,
+    gamesPlayed: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    totalWon: 0
+  });
+
+  interface CraftleCookie {
+    date: string;
+    success: boolean;
+    tries: Try[];
+    gamesPlayed: number;
+    currentStreak: number;
+    bestStreak: number;
+    totalWon: number;
+  }
+
+  const checkIfDailyCompleted = async () => {
+    try {
+      const savedCookie = await getCookie();
+      if (savedCookie) {
+        const data: CraftleCookie = JSON.parse(savedCookie.value);
+        const d = new Date();
+        const fd = d.toISOString().split('T')[0];
+
+        if (data.date === fd) {
+          setDailyCompleted({
+            completed: true,
+            success: data.success,
+            tries: data.tries,
+            gamesPlayed: data.gamesPlayed,
+            currentStreak: data.currentStreak,
+            bestStreak: data.bestStreak,
+            totalWon: data.totalWon
+          });
+        } else if (data.date !== fd) {
+          setDailyCompleted({
+            completed: false,
+            success: false,
+            tries: data.tries,
+            gamesPlayed: data.gamesPlayed,
+            currentStreak: data.currentStreak,
+            bestStreak: data.currentStreak,
+            totalWon: data.totalWon
+          });
+        }
+      } else {
+        setDailyCompleted({
+          completed: false,
+          success: false,
+          tries: tries,
+          gamesPlayed: 0,
+          currentStreak: 0,
+          bestStreak: 0,
+          totalWon: 0
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+};
+
   useEffect(() => {
+    handlePost();
+    checkIfDailyCompleted();
     if (currentTry >= 0 && currentTry < tries.length) {
       setTries((prevTries) =>
         prevTries.map((item, idx) =>
@@ -104,7 +181,9 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
         )
       );
     }
-  }, [currentTry]);
+  }, [currentTry, isMatch, isFailed]);
+
+  const getRandomDelay = () => Math.random() * 0.5;
 
   const calculatePercentage = (craftingTable: (RecipeAttempt | null)[][], currentRecipe: string[][][]) => {
     const flattenTable = craftingTable.flat().map((item) => item?.name || "");
@@ -124,6 +203,21 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
     const flattenTable = craftingTable.flat().map((item) => item?.name || "");
     const flattenRecipe = currentRecipe.flat().flat();
+
+    const tableIsEmpty = flattenTable.every(item => item === "");
+
+    if (tableIsEmpty) {
+      toast('Click a square to craft!', {
+        icon: '🪚',
+        style: {
+          border: '2px solid #fafafa',
+          padding: '16px',
+          backgroundColor: '#212121',
+          color: '#fafafa'
+        },
+      });
+      return;
+    };
 
     if (flattenTable.length !== flattenRecipe.length) {
       setIsMatch(false);
@@ -156,8 +250,8 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     // Update tries with percentage
     setTries((prevTries) =>
       prevTries.map((item, idx) =>
-        idx === currentTry
-          ? { ...item, success: exactMatch, recipe: craftingTable, percentage }
+        idx === currentTry + 1
+          ? { ...item, success: exactMatch, recipe: craftingTable, percentage: percentage }
           : item
       )
     );
@@ -200,7 +294,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           idx === currentTry + 1 ? { ...item, success: true, recipe: craftingTable } : item
         )
       );
-      await getsession(tries);
       recipeSuccess.onOpen();
     } else {
       setCurrentTry((prev) => (prev + 1) % tries.length);
@@ -229,13 +322,17 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       tries: currentTry + 2,
     });
 
-    console.log(currentTry)
     if (currentTry + 2 === 6) {
       setIsFailed(true);
-      await getsession(tries);
     };
+  };
 
-    return exactMatch;
+  const handlePost = async () => {
+    if (isFailed) {
+      await getsession(tries, false)
+    } else if (isMatch) {
+      await getsession(tries, true)
+    };
   };
 
   const handleBoxClick = (rowIndex: number, colIndex: number) => {
@@ -259,23 +356,40 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   return (
     <main className="flex flex-col h-[90vh] w-full justify-center items-center">
       <section className="flex w-full justify-center items-center">
-      <div className="hidden md:flex w-[212px] mr-16 justify-end">
-        <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
-      </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isFailed || dailyCompleted.completed ? 0 : 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, delay: 1.25 }}
+          className="hidden md:flex w-[212px] mr-16 justify-end"
+        >
+          <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
+        </motion.div>
       <section className="">
-        <RecipeTries tries={tries} currentTry={currentTry} />
+          <motion.div
+            initial={{ opacity: !isFailed ? 0 : 1, scale: !isFailed ? 0.4 : 1 }}
+            exit={{ opacity: 0, scale: 0.4 }}
+            animate={{ opacity: isFailed || dailyCompleted.completed ? 0 : 1, scale: isFailed ? 0.4 : 1 }}
+            transition={{ duration: 0.4, delay: 1.75 }}
+          >
+            <RecipeTries tries={tries} currentTry={currentTry} />
+          </motion.div>
         <div className="crafting">
           <div className="crafting__table">
             {craftingTable.map((row, rowIndex) => (
-              <div key={rowIndex} className="crafting__row">
+              <motion.div variants={rowVariants} initial={{ opacity: 1, scale: 1 }} animate={isFailed ? "animate" : "initial"} key={rowIndex} className="crafting__row">
                 {row.map((box, colIndex) => (
-                  <div
+                  <motion.div
                     key={colIndex}
                     className="crafting__box"
-                    onClick={() => handleBoxClick(rowIndex, colIndex)}
-                    style={{ border: box?.borderColor ? `2px solid ${box.borderColor}` : "1px solid gray" }}
+                    onClick={!isFailed && !dailyCompleted.completed ? () => handleBoxClick(rowIndex, colIndex) : undefined}
+                    variants={boxVariants}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit="exit"
+                    transition={{ duration: 0.3, delay: getRandomDelay() }}
                   >
-                    {box && (
+                    {box && !isFailed && !isMatch && (
                       <img
                         height={40}
                         width={40}
@@ -283,36 +397,68 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
                         alt={`item ${box.name}`}
                       />
                     )}
-                  </div>
+                    {dailyCompleted.completed && dailyCompleted.success && colIndex % Math.floor(Math.random()*10) !== 0 && (
+                      <motion.div  
+                        className="h-5 w-5 bg-success rounded-md"
+                        variants={boxVariants}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit="exit"
+                        transition={{ duration: 0.3, delay: getRandomDelay() }}
+                      ></motion.div>
+                    )}
+                    {dailyCompleted.completed && !dailyCompleted.success && colIndex % Math.floor(Math.random()*10) !== 0 && (
+                      <motion.div  
+                        className="h-5 w-5 bg-danger rounded-md"
+                        variants={boxVariants}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit="exit"
+                        transition={{ duration: 0.3, delay: getRandomDelay() }}
+                      ></motion.div>
+                    )}
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
         <div className="flex justify-center items-center mt-12">
-          {!isMatch && !isFailed ?
-            <Button
-              className="font-medium text-md"
-              color="primary"
-              radius="lg"
-              variant="shadow"
-              onPress={handleCraft}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isFailed || dailyCompleted.completed ? 0 : 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, delay: 2.25 }}
+              className={isFailed || dailyCompleted.completed ? 'hidden' : 'flex'}
             >
-              {`Craft -->`}
-            </Button>
-            :
-            <Button
-              className="font-medium text-md"
-              color="primary"
-              radius="full"
-              variant="bordered"
-              onPress={() => statsModal.onOpen()}
+              <Button
+                className="font-medium text-md"
+                color="primary"
+                radius="full"
+                variant="shadow"
+                onPress={handleCraft}
+              >
+                {`Craft -->`}
+              </Button>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isFailed || dailyCompleted.completed ? 1 : 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, delay: 2.5 }}
+              className={!isFailed && !dailyCompleted.completed ? 'hidden' : 'flex'}
             >
-              Statistics
-            </Button>
-          }
+              <Button
+                className="font-medium text-md"
+                color="primary"
+                radius="full"
+                variant="shadow"
+                onPress={() => statsModal.onOpen()}
+              >
+                Statistics
+              </Button>
+            </motion.div>
         </div>
-
         <RecipeSuccess
           isOpen={recipeSuccess.isOpen}
           onOpenChange={recipeSuccess.onOpenChange}
@@ -327,18 +473,25 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onSelect={handleSelect}
         />
         <StatsModal
-          tries={tries}
+          tries={dailyCompleted.tries}
+          stats={dailyCompleted}
           isOpen={statsModal.isOpen}
           onClose={statsModal.onClose}
           onOpenChange={statsModal.onOpenChange}
         />
       </section>
       <div className="hidden md:flex w-[212px] ml-16 justify-start">
-        <div className="recipe__next" />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isFailed || dailyCompleted.completed ? 0 : 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, delay: 1 }}
+          className="recipe__next"
+        />
       </div>
     </section>
       <section className="absolute bottom-0 mb-32">
-        {foundItems.length !== 0 && (
+        {foundItems.length !== 0 && !dailyCompleted.completed && (
           foundItems.map((item, idx) => (
             <motion.div
               key={idx} 
