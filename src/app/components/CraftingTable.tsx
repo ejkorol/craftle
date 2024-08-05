@@ -109,13 +109,21 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const [dailyCompleted, setDailyCompleted] = useState({
     completed: false,
     success: false,
-    tries: tries
+    tries: tries,
+    gamesPlayed: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    totalWon: 0
   });
 
   interface CraftleCookie {
     date: string;
     success: boolean;
-    tries: Try[]
+    tries: Try[];
+    gamesPlayed: number;
+    currentStreak: number;
+    bestStreak: number;
+    totalWon: number;
   }
 
   const checkIfDailyCompleted = async () => {
@@ -131,12 +139,20 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
             completed: true,
             success: data.success,
             tries: data.tries,
+            gamesPlayed: data.gamesPlayed,
+            currentStreak: data.currentStreak,
+            bestStreak: data.bestStreak,
+            totalWon: data.totalWon
           });
         } else if (data.date !== fd) {
           setDailyCompleted({
             completed: false,
             success: false,
             tries: data.tries,
+            gamesPlayed: data.gamesPlayed,
+            currentStreak: data.currentStreak,
+            bestStreak: data.currentStreak,
+            totalWon: data.totalWon
           });
         }
       } else {
@@ -144,6 +160,10 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           completed: false,
           success: false,
           tries: tries,
+          gamesPlayed: 0,
+          currentStreak: 0,
+          bestStreak: 0,
+          totalWon: 0
         });
       }
     } catch (e) {
@@ -454,6 +474,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
         />
         <StatsModal
           tries={dailyCompleted.tries}
+          stats={dailyCompleted}
           isOpen={statsModal.isOpen}
           onClose={statsModal.onClose}
           onOpenChange={statsModal.onOpenChange}
