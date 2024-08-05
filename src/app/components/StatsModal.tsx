@@ -12,10 +12,12 @@ import {
   TableBody,
   TableRow,
   TableColumn,
-  TableCell
+  TableCell,
+  getKeyValue
 } from "@nextui-org/react";
 
 import NextImage from "next/image";
+import { useCallback } from "react";
 
 import { CircleX, ArrowUpRight, ClockArrowDown } from "lucide-react";
 
@@ -23,9 +25,81 @@ interface StatsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenChange: (isOpen: boolean) => void;
+  tries: Try[]
 }
 
-export const StatsModal = ({ isOpen, onClose, onOpenChange }: StatsModalProps) => {
+interface Try {
+  try: number;
+  success: boolean | null;
+  recipe: any;
+  percentage: number;
+}
+
+const columns = [
+  {
+    key: 'try',
+    label: 'TRY'
+  },
+  {
+    key: 'percentage',
+    label: 'AVG %'
+  }
+]
+
+export const StatsModal = ({ isOpen, onClose, onOpenChange, tries }: StatsModalProps) => {
+
+  const getSliderColor = (percentage: number) => {
+    if (percentage >= 0 && percentage < 15) {
+      return 'secondary';
+    } else if (percentage >= 15 && percentage < 30) {
+      return 'danger';
+    } else if (percentage >= 30 && percentage < 55) {
+      return 'warning';
+    } else if (percentage >= 55 && percentage <= 100) {
+      return 'success';
+    }
+  };
+
+  const renderCell = useCallback((item: Try, columnKey: any) => {
+    switch (columnKey) {
+      case "try":
+      return (
+        <Button
+          color="secondary"
+          disabled
+          isIconOnly
+          className="text-lg font-mono"
+          size="sm"
+          radius="md"
+        >
+          {getKeyValue(item, columnKey)}
+        </Button>
+      );
+      case "percentage":
+      const sliderColor = getSliderColor(item.percentage);
+      return (
+        <div className="relative w-full h-full">
+          <Slider
+            classNames={{
+                base: 'w-full',
+                track: 'bg-transparent'
+            }}
+            size="lg"
+            aria-label="Player progress"
+            color={sliderColor}
+            hideThumb
+            maxValue={100}
+            minValue={0}
+            value={item.percentage}
+          />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <p className="text-center text-sm font-mono tracking-wide">{`${item.percentage}%`}</p>
+          </div>
+        </div>
+      );
+    }
+  }, []);
+
   return (
     <Modal
       backdrop="blur"
@@ -80,161 +154,15 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange }: StatsModalProps) =
               removeWrapper
               hideHeader
             >
-              <TableHeader>
-                <TableColumn>try</TableColumn>
-                <TableColumn>distribution</TableColumn>
+              <TableHeader columns={columns}>
+                {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
               </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <Button
-                      color="secondary"
-                      disabled
-                      isIconOnly
-                      className="text-lg font-mono"
-                      size="sm"
-                      radius="md"
-                    >
-                      1
-                    </Button>
-                  </TableCell>
-                  <TableCell className="w-full">
-                    <Slider 
-                      className="max-w-md"
-                      size="md"
-                      aria-label="Player progress" 
-                      color="foreground"
-                      hideThumb={true}
-                      isDisabled
-                      defaultValue={20}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <Button
-                      color="secondary"
-                      disabled
-                      isIconOnly
-                      className="text-lg font-mono"
-                      size="sm"
-                      radius="md"
-                    >
-                      2
-                    </Button>
-                  </TableCell>
-                  <TableCell className="w-full">
-                    <Slider 
-                      className="max-w-md"
-                      size="md"
-                      aria-label="Player progress" 
-                      color="foreground"
-                      hideThumb={true}
-                      defaultValue={20}
-                      isDisabled
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <Button
-                      color="secondary"
-                      disabled
-                      isIconOnly
-                      className="text-lg font-mono"
-                      size="sm"
-                      radius="md"
-                    >
-                      3
-                    </Button>
-                  </TableCell>
-                  <TableCell className="w-full">
-                    <Slider 
-                      className="max-w-md"
-                      size="md"
-                      aria-label="Player progress" 
-                      color="foreground"
-                      hideThumb={true}
-                      isDisabled
-                      defaultValue={20}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <Button
-                      color="secondary"
-                      disabled
-                      isIconOnly
-                      className="text-lg font-mono"
-                      size="sm"
-                      radius="md"
-                    >
-                      4
-                    </Button>
-                  </TableCell>
-                  <TableCell className="w-full">
-                    <Slider 
-                      className="max-w-md"
-                      size="md"
-                      aria-label="Player progress" 
-                      color="foreground"
-                      hideThumb={true}
-                      defaultValue={20}
-                      isDisabled
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <Button
-                      color="secondary"
-                      disabled
-                      isIconOnly
-                      className="text-lg font-mono"
-                      size="sm"
-                      radius="md"
-                    >
-                      5
-                    </Button>
-                  </TableCell>
-                  <TableCell className="w-full">
-                    <Slider 
-                      className="max-w-md"
-                      size="md"
-                      aria-label="Player progress" 
-                      color="foreground"
-                      hideThumb={true}
-                      defaultValue={20}
-                      isDisabled
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <Button
-                      color="secondary"
-                      disabled
-                      isIconOnly
-                      className="text-lg font-mono"
-                      size="sm"
-                      radius="md"
-                    >
-                      6
-                    </Button>
-                  </TableCell>
-                  <TableCell className="w-full">
-                    <Slider 
-                      className="max-w-md"
-                      size="md"
-                      isDisabled
-                      aria-label="Player progress" 
-                      color="foreground"
-                      hideThumb={true}
-                      defaultValue={20}
-                    />
-                  </TableCell>
-                </TableRow>
+              <TableBody items={tries}>
+                {item => (
+                  <TableRow key={item.try}>
+                    {columnKey => <TableCell className={columnKey === 'percentage' ? 'w-full' : ''}>{renderCell(item, columnKey)}</TableCell>}
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </section>

@@ -4,7 +4,6 @@ import {
   Modal,
   ModalContent,
   ModalBody,
-  Button,
   Image
 } from "@nextui-org/react";
 import Confetti from "react-dom-confetti";
@@ -49,6 +48,19 @@ const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessPro
     }
   }, [isOpen]);
 
+  function getMessage(tries: number) {
+    if (tries === 1) {
+      return 'Excellent!';
+    } else if (tries <= 3) {
+      return 'Not bad!';
+    } else if (tries <= 5) {
+      return 'Could be better!';
+    } else if (tries === 6) {
+      return 'You got it!';
+    }
+    return '';
+  }
+
   if (!data) return null;
 
   return (
@@ -68,15 +80,9 @@ const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessPro
             <Image isBlurred src={`http://minecraft-api.minko.industries/images/1.19/${data.image}.png`} alt={data.displayName} width={100} height={100} />
             <h1 className="text-4xl font-serif font-bold tracking-wide my-10">{data.displayName}</h1>
             <h3 className="text-3xl font-serif font-medium tracking-normal">You crafted it in just<br/>{data.tries} {data.tries === 1 ? 'recipe' : 'recipes'}!</h3>
-            <Button
-              onPress={onClose}
-              className="my-10 text-xl font-light"
-              variant="shadow"
-              color="primary"
-              radius="full"
-            >
-              Leaderboards
-            </Button>
+            <p className="text-xl font-serif font-medium tracking-normal my-10">
+              {getMessage(data.tries)}
+            </p>
           </section>
         </ModalBody>
       </ModalContent>

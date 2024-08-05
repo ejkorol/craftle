@@ -4,11 +4,12 @@ import RecipeTries from "./RecipeTries";
 import { useDisclosure, Button, Tooltip } from "@nextui-org/react";
 import InventoryModal from "./InventoryModal";
 import RecipeSuccess from "./RecipeSuccess";
-import RecipeFailure from "./RecipeFailure";
 import RecipeTryAttempt from "./RecipeAttempt";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { StatsModal } from "./StatsModal";
+import { auth } from "@/lib/auth";
+import { getsession } from "./CraftingTableActions";
 
 const animationVariants = {
   hidden: { scale: 0.8, opacity: 0 },
@@ -79,7 +80,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const recipeSuccess = useDisclosure();
-  const recipeFailure = useDisclosure();
   const statsModal = useDisclosure();
 
   const [foundItems, setFoundItems] = useState<FoundItem[]>([]);
@@ -119,7 +119,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     return Math.round(percentage * 100) / 100;
   };
 
-  const handleCraft = () => {
+  const handleCraft = async () => {
     const currentRecipe = recipe[0].recipe;
 
     const flattenTable = craftingTable.flat().map((item) => item?.name || "");
@@ -200,6 +200,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           idx === currentTry + 1 ? { ...item, success: true, recipe: craftingTable } : item
         )
       );
+      await getsession(tries);
       recipeSuccess.onOpen();
     } else {
       setCurrentTry((prev) => (prev + 1) % tries.length);
@@ -231,7 +232,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     console.log(currentTry)
     if (currentTry + 2 === 6) {
       setIsFailed(true);
-      recipeFailure.onOpen();
+      await getsession(tries);
     };
 
     return exactMatch;
@@ -289,7 +290,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           </div>
         </div>
         <div className="flex justify-center items-center mt-12">
-            <Button onPress={() => statsModal.onOpen()}>Test</Button>
           {!isMatch && !isFailed ?
             <Button
               className="font-medium text-md"
@@ -306,8 +306,9 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
               color="primary"
               radius="full"
               variant="bordered"
+              onPress={() => statsModal.onOpen()}
             >
-              Leaderboards
+              Statistics
             </Button>
           }
         </div>
@@ -318,11 +319,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onClose={recipeSuccess.onClose}
           data={data!}
         />
-        <RecipeFailure
-          isOpen={recipeFailure.isOpen}
-          onOpenChange={recipeFailure.onOpenChange}
-          onClose={recipeFailure.onClose}
-        />
         <InventoryModal
           onOpenChange={onOpenChange}
           isOpen={isOpen}
@@ -331,6 +327,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onSelect={handleSelect}
         />
         <StatsModal
+          tries={tries}
           isOpen={statsModal.isOpen}
           onClose={statsModal.onClose}
           onOpenChange={statsModal.onOpenChange}
