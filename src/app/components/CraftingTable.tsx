@@ -15,6 +15,17 @@ const animationVariants = {
   visible: { scale: 1, opacity: 1 },
 };
 
+const boxVariants = {
+  initial: { opacity: 0, scale: 0.6 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.8 },
+};
+
+const rowVariants = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1 } },
+};
+
 interface Item {
   id: number;
   name: string;
@@ -104,6 +115,8 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
       );
     }
   }, [currentTry]);
+
+  const getRandomDelay = () => Math.random() * 0.5;
 
   const calculatePercentage = (craftingTable: (RecipeAttempt | null)[][], currentRecipe: string[][][]) => {
     const flattenTable = craftingTable.flat().map((item) => item?.name || "");
@@ -273,23 +286,41 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   return (
     <main className="flex flex-col h-[90vh] w-full justify-center items-center">
       <section className="flex w-full justify-center items-center">
-      <div className="hidden md:flex w-[212px] mr-16 justify-end">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isFailed ? 0 : 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5, delay: 1.25 }}
+        className="hidden md:flex w-[212px] mr-16 justify-end"
+      >
         <RecipeTryAttempt attempts={tries} currentTry={currentTry} />
-      </div>
+      </motion.div>
       <section className="">
-        <RecipeTries tries={tries} currentTry={currentTry} />
+        <motion.div
+          initial={{ opacity: !isFailed ? 0 : 1, scale: !isFailed ? 0.4 : 1 }}
+          exit={{ opacity: 0, scale: 0.4 }}
+          animate={{ opacity: isFailed ? 0 : 1, scale: isFailed ? 0.4 : 1 }}
+          transition={{ duration: 0.4, delay: 1.75 }}
+        >
+          <RecipeTries tries={tries} currentTry={currentTry} />
+        </motion.div>
         <div className="crafting">
           <div className="crafting__table">
             {craftingTable.map((row, rowIndex) => (
-              <div key={rowIndex} className="crafting__row">
+              <motion.div variants={rowVariants} initial={{ opacity: 1, scale: 1 }} animate={isFailed ? "animate" : "initial"} key={rowIndex} className="crafting__row">
                 {row.map((box, colIndex) => (
-                  <div
+                  <motion.div
                     key={colIndex}
                     className="crafting__box"
-                    onClick={() => handleBoxClick(rowIndex, colIndex)}
+                    onClick={!isFailed ? () => handleBoxClick(rowIndex, colIndex) : undefined}
                     style={{ border: box?.borderColor ? `2px solid ${box.borderColor}` : "1px solid gray" }}
+                    variants={boxVariants}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit="exit"
+                    transition={{ duration: 0.3, delay: getRandomDelay() }}
                   >
-                    {box && (
+                    {box && !isFailed && (
                       <img
                         height={40}
                         width={40}
@@ -297,34 +328,57 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
                         alt={`item ${box.name}`}
                       />
                     )}
-                  </div>
+                    {isFailed && colIndex % Math.floor(Math.random()*10) !== 0  && (
+                      <motion.div  
+                        className="h-5 w-5 bg-danger rounded-md"
+                        variants={boxVariants}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit="exit"
+                        transition={{ duration: 0.3, delay: getRandomDelay() }}
+                      ></motion.div>
+                    )}
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
         <div className="flex justify-center items-center mt-12">
-          {!isMatch && !isFailed ?
-            <Button
-              className="font-medium text-md"
-              color="primary"
-              radius="lg"
-              variant="shadow"
-              onPress={handleCraft}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isFailed ? 0 : 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, delay: 2.25 }}
+                  className={isFailed ? 'hidden' : 'flex'}
             >
-              {`Craft -->`}
-            </Button>
-            :
-            <Button
-              className="font-medium text-md"
-              color="primary"
-              radius="full"
-              variant="bordered"
-              onPress={() => statsModal.onOpen()}
+              <Button
+                className="font-medium text-md"
+                color="primary"
+                radius="lg"
+                variant="shadow"
+                onPress={handleCraft}
+              >
+                {`Craft -->`}
+              </Button>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isFailed ? 1 : 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, delay: 2.5 }}
+                  className={!isFailed ? 'hidden' : 'flex'}
             >
-              Statistics
-            </Button>
-          }
+              <Button
+                className="font-medium text-md"
+                color="primary"
+                radius="full"
+                variant="bordered"
+                onPress={() => statsModal.onOpen()}
+              >
+                Statistics
+              </Button>
+            </motion.div>
         </div>
 
         <RecipeSuccess
@@ -348,7 +402,13 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
         />
       </section>
       <div className="hidden md:flex w-[212px] ml-16 justify-start">
-        <div className="recipe__next" />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isFailed ? 0 : 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, delay: 1 }}
+          className="recipe__next"
+        />
       </div>
     </section>
       <section className="absolute bottom-0 mb-32">
