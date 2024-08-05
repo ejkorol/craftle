@@ -2,32 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.tries {
+  @apply flex m-auto max-w-[288px] max-h-[288px] justify-between mb-12 items-center
+};
+
+.tries__failed {
+  @apply flex h-5 w-5 bg-danger rounded-md cursor-pointer
+};
+
+.tries__success {
+  @apply flex h-5 w-5 bg-success rounded-md
+};
+
+.tries__current {
+  @apply flex h-8 w-8 border-solid border-3 rounded-xl border-primary cursor-pointer;
+};
+
+.tries__unused {
+  @apply flex h-5 w-5 bg-secondary rounded-md
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.crafting {
+  @apply flex flex-row justify-center items-center
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
+.crafting__table {
+  @apply flex max-w-[288px] max-h-[288px] flex-col gap-6 justify-center items-center
+};
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.crafting__row {
+  @apply flex gap-6
+};
+
+.crafting__box {
+  @apply flex justify-center items-center border-solid border-3 border-secondary w-20 h-20 rounded-xl cursor-pointer hover:border-primary transition-all
+};
+
+.recipe__previous {
+  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer
+};
+
+.recipe__next {
+  @apply flex h-8 w-8 bg-secondary rounded-md cursor-pointer
 }
