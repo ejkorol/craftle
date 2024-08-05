@@ -11,7 +11,7 @@ interface Try {
   percentage: number;
 }
 
-export const setCookie = async (success: boolean) => {
+export const setCookie = async (success: boolean, tries: Try[]) => {
 
   const d = new Date();
   const fd = d.toISOString().split('T')[0];
@@ -19,7 +19,8 @@ export const setCookie = async (success: boolean) => {
     name: 'craftleDaily',
     value: JSON.stringify({
       date: fd,
-      success: success
+      success: success,
+      tries: tries
     }),
     httpOnly: true,
     path: '/'

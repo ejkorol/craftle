@@ -87,10 +87,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
   const [craftingTable, setCraftingTable] = useState<(RecipeAttempt | null)[][]>(initialTable);
   const [selectedSquare, setSelectedSquare] = useState({ row: 0, col: 0 });
   const [data, setData] = useState<Data | null>(null);
-  const [dailyCompleted, setDailyCompleted] = useState({
-    completed: false,
-    success: false
-  });
 
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const recipeSuccess = useDisclosure();
@@ -110,41 +106,50 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     { try: 6, success: null, recipe: null, percentage: 0 },
   ]);
 
-  interface craftleCookie {
+  const [dailyCompleted, setDailyCompleted] = useState({
+    completed: false,
+    success: false,
+    tries: tries
+  });
+
+  interface CraftleCookie {
     date: string;
     success: boolean;
+    tries: Try[]
   }
 
   const checkIfDailyCompleted = async () => {
     try {
       const savedCookie = await getCookie();
       if (savedCookie) {
-        const data: craftleCookie = JSON.parse(savedCookie.value)
+        const data: CraftleCookie = JSON.parse(savedCookie.value);
         const d = new Date();
         const fd = d.toISOString().split('T')[0];
 
-        if (data.date === fd && data.success === true) {
+        if (data.date === fd) {
           setDailyCompleted({
             completed: true,
-            success: true
-          })
-        } else if (data.date === fd && data.success === false) {
+            success: data.success,
+            tries: data.tries,
+          });
+        } else if (data.date !== fd) {
           setDailyCompleted({
-            completed: true,
-            success: false
-          })
+            completed: false,
+            success: false,
+            tries: data.tries,
+          });
         }
       } else {
         setDailyCompleted({
           completed: false,
-          success: false
+          success: false,
+          tries: tries,
         });
       }
-      console.log(dailyCompleted)
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+};
 
   useEffect(() => {
     checkIfDailyCompleted();
@@ -268,7 +273,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           idx === currentTry + 1 ? { ...item, success: true, recipe: craftingTable } : item
         )
       );
-      await setCookie(true);
+      await setCookie(true, tries);
       await getsession(tries);
       recipeSuccess.onOpen();
     } else {
@@ -300,7 +305,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
     if (currentTry + 2 === 6) {
       setIsFailed(true);
-      await setCookie(false);
+      await setCookie(false, tries);
       await getsession(tries);
     };
 
@@ -445,7 +450,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           onSelect={handleSelect}
         />
         <StatsModal
-          tries={tries}
+          tries={dailyCompleted.tries}
           isOpen={statsModal.isOpen}
           onClose={statsModal.onClose}
           onOpenChange={statsModal.onOpenChange}
