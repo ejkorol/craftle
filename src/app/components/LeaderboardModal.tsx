@@ -29,32 +29,6 @@ interface LeaderboardModalProps {
   onOpenChange: (isOpen: boolean) => void;
 }
 
-interface User {
-  id: string;
-  rank: number;
-  user: UserInfo;
-  average: number
-}
-
-interface UserInfo {
-  username: string;
-  name: string;
-  image: string;
-}
-
-const users = [
-  {
-    id: "123abcd",
-    rank: 1,
-    user: {
-      username: 'ejkorol',
-      name: 'Jason Korol',
-      image: 'https://avatars.githubusercontent.com/u/65996263?v=4'
-    },
-    average: 88
-  }
-]
-
 const columns = [
   {
     key: 'rank',
