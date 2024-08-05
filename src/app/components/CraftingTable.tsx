@@ -8,6 +8,8 @@ import RecipeTryAttempt from "./RecipeAttempt";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { StatsModal } from "./StatsModal";
+import { auth } from "@/lib/auth";
+import { getsession } from "./CraftingTableActions";
 
 const animationVariants = {
   hidden: { scale: 0.8, opacity: 0 },
@@ -117,7 +119,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     return Math.round(percentage * 100) / 100;
   };
 
-  const handleCraft = () => {
+  const handleCraft = async () => {
     const currentRecipe = recipe[0].recipe;
 
     const flattenTable = craftingTable.flat().map((item) => item?.name || "");
@@ -198,6 +200,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           idx === currentTry + 1 ? { ...item, success: true, recipe: craftingTable } : item
         )
       );
+      await getsession(tries);
       recipeSuccess.onOpen();
     } else {
       setCurrentTry((prev) => (prev + 1) % tries.length);
@@ -229,6 +232,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     console.log(currentTry)
     if (currentTry + 2 === 6) {
       setIsFailed(true);
+      await getsession(tries);
     };
 
     return exactMatch;
