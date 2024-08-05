@@ -1,3 +1,5 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import {
   Card,
   CardBody,
@@ -10,11 +12,15 @@ import { ArrowLeft } from "lucide-react";
 import { signIn } from "@/lib/auth";
 
 const Signin = async () => {
+  const session = await auth();
+
+  if (session) return redirect('/craftle')
+
   return (
     <main className="flex h-svh w-full items-center justify-center">
       <section className="flex h-svh w-full items-center justify-center w-full h-full">
         <Card
-          className="w-1/5 p-4"
+          className="p-4"
           shadow="lg"
         >
           <CardHeader>
@@ -27,7 +33,7 @@ const Signin = async () => {
             <div className="flex flex-col gap-4 w-full">
               <form className="w-full" action={async () => {
                 "use server"
-                await signIn("google")
+                await signIn("google", {redirectTo: "/craftle"})
               }}>
                 <Button
                   fullWidth
@@ -40,7 +46,7 @@ const Signin = async () => {
               </form>
               <form className="w-full" action={async () => {
                 "use server"
-                await signIn("github")
+                await signIn("github", {redirectTo: "/craftle"})
               }}>
                 <Button
                   fullWidth
@@ -55,7 +61,7 @@ const Signin = async () => {
           </CardBody>
           <CardFooter className="w-full h-full">
             <Button
-              href="/"
+              href="/craftle"
               size="sm"
               variant="light"
               as={Link}
