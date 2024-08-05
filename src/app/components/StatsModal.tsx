@@ -16,8 +16,10 @@ import {
   getKeyValue
 } from "@nextui-org/react";
 
+import toast from "react-hot-toast";
+
 import NextImage from "next/image";
-import { useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { CircleX, ArrowUpRight, ClockArrowDown } from "lucide-react";
 
@@ -59,7 +61,17 @@ const columns = [
 
 export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: StatsModalProps) => {
 
-  console.log(stats)
+  const [redirectTime, setRedirectTime] = useState(3);
+  const [intervalId, setIntervalId] = useState<any>(null);
+
+  useEffect(() => {
+    // Clear the interval if the component unmounts
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [intervalId]);
 
   const getSliderColor = (percentage: number) => {
     if (percentage >= 0 && percentage < 15) {
@@ -112,6 +124,78 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
       );
     }
   }, []);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Craftle',
+          text: 'Check out this awesome app!',
+          url: window.location.href,
+        });
+      console.log('Success');
+      } catch (error) {
+        console.error('Error:', error);
+        toast('Sorry! there was an error sharing', {
+          icon: '😪',
+          style: {
+            border: '2px solid #fafafa',
+            padding: '16px',
+            backgroundColor: '#212121',
+            color: '#fafafa'
+          },
+        });
+      }
+    } else {
+      console.log('Web Share not supported');
+      toast('Sorry! The Web Share API is not supported in your browser', {
+        icon: '😪',
+        style: {
+          border: '2px solid #fafafa',
+          padding: '16px',
+          backgroundColor: '#212121',
+          color: '#fafafa'
+        },
+      });
+    }
+  };
+
+  const handleStronghold = () => {
+    const newUrl = 'https://www.jasonkorol.ca';
+
+    const redirectPromise = new Promise((resolve, _reject) => {
+      const id = setInterval(() => {
+        setRedirectTime((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(id);
+            window.open(newUrl, '_blank');
+            resolve('Redirect completed');
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+
+      setIntervalId(id);
+    });
+
+    toast.promise(
+      redirectPromise,
+      {
+        loading: 'Redirecting...',
+        success: <b>Redirect successful!</b>,
+        error: <b>Could not redirect.</b>,
+      },
+      {
+        style: {
+          border: '2px solid #fafafa',
+          padding: '16px',
+          backgroundColor: '#212121',
+          color: '#fafafa'
+        }
+      }
+    );
+  };
 
   return (
     <Modal
@@ -189,6 +273,7 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
             className="font-medium"
             disabled
             endContent={ <ClockArrowDown height={24} width={24} className="text-primary" /> }
+            onPress={handleStronghold}
           >
             Explore the Stronghold
           </Button>
@@ -198,6 +283,7 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
             radius="full"
             className="text-primary font-medium"
             endContent={ <ArrowUpRight height={24} width={24} className="text-primary" /> }
+            onPress={handleShare}
           >
             Share
           </Button>
