@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import NavBar from "@/app/components/NavBar";
+import NavBar from "@/app/components/NavBar/NavBar";
 
 export const metadata: Metadata = {
   title: "Craftle Game",
