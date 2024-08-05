@@ -32,6 +32,9 @@ const config: Config = {
             foreground: '#212121'
           },
           secondary: {
+            400: '#424242',
+            500: '#202020',
+            600: '#2c2c2c',
             DEFAULT: '#424242'
           },
           danger: {

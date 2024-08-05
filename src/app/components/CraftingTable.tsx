@@ -340,17 +340,30 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     onOpen();
   };
 
-  const handleSelect = (selectedItem: Item) => {
-    const newTable = craftingTable.map((row, rIdx) =>
-      row.map((box, cIdx) => {
-        if (rIdx === selectedSquare.row && cIdx === selectedSquare.col) {
-          return { name: selectedItem.name, image: selectedItem.image };
-        }
-        return box;
-      })
-    );
-    setCraftingTable(newTable);
-    onClose();
+  const handleSelect = (selectedItem: (Item | null)) => {
+    if (selectedItem) {
+      const newTable = craftingTable.map((row, rIdx) =>
+        row.map((box, cIdx) => {
+          if (rIdx === selectedSquare.row && cIdx === selectedSquare.col) {
+            return { name: selectedItem.name, image: selectedItem.image };
+          }
+          return box;
+        })
+      );
+      setCraftingTable(newTable);
+      onClose();
+    } else {
+      const newTable = craftingTable.map((row, rIdx) =>
+        row.map((box, cIdx) => {
+          if (rIdx === selectedSquare.row && cIdx === selectedSquare.col) {
+            return null
+          }
+          return box;
+        })
+      );
+      setCraftingTable(newTable);
+      onClose();
+    }
   };
 
   return (

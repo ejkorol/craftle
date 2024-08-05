@@ -10,7 +10,7 @@ import {
   Tooltip,
   Image
 } from "@nextui-org/react";
-import { Search, CircleX } from "lucide-react";
+import { Search, CircleX, CircleSlash2, Trash } from "lucide-react";
 
 interface InventoryModalProps {
   onSelect: (item: Item) => void;
@@ -43,13 +43,19 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
     ))
   }, [query]);
 
+  const handleClear = () => {
+    onSelect(null)
+  };
+
   return (
     <Modal
       backdrop="blur"
       size="lg"
+      classNames={{
+        base: "bg-dark"
+      }}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      className="bg-dark"
       shadow="lg"
       hideCloseButton
       scrollBehavior="inside"
@@ -62,23 +68,52 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
           </Button>
         </ModalHeader>
         <ModalBody>
+          <div className="flex gap-4 items-center">
           <Input
             size="lg"
             type="text"
+            classNames={{
+              input: [
+                "bg-transparent",
+                "placeholder:text-default-700/50 dark:placeholder:text-white/60"
+              ],
+              innerWrapper: "bg-transparent",
+              label: "text-black/50 dark:text-white/90",
+              inputWrapper: [
+                "shadow-xl",
+                "bg-secondary-400/50",
+                "dark:bg-secondary-500",
+                "backdrop-blur-xl",
+                "backdrop-saturate-200",
+                "hover:bg-secondary-600/70",
+                "dark:hover:bg-secondary-600",
+                "group-data-[focus=true]:bg-default-200/50",
+                "dark:group-data-[focus=true]:bg-secondary-600",
+                "!cursor-text",
+              ],
+            }}
             placeholder="Search"
             onChange={(e) => setQuery(e.target.value)}
             startContent={
               <Search className="text-secondary" height={24} width={24} />
             }
           />
+          <Button onPress={handleClear} size="lg" color="danger" variant="shadow" isIconOnly><Trash height={20} width={20} className="text-primary" /></Button>
+          </div>
           <section className="flex gap-4">
-            <main className="w-full">
-              <div className="grid grid-cols-5 gap-4 place-items-center w-full max-h-[50vh] rounded-lg p-[16px]">
-                {filteredItems &&
+            <main className="w-full mb-4 mt-2">
+              <div className="grid grid-cols-5 gap-4 place-items-center w-full bg-secondary-500 rounded-xl p-[16px]">
+                {filteredItems.length === 0 ? (
+                    <div
+                      className="bg-secondary-600 w-[50px] h-[50px] rounded-lg flex justify-center items-center"
+                    >
+                      <CircleSlash2 height={30} width={30} className="text-primary" />
+                    </div>
+                ) : (
                   filteredItems.map((item: Item) => (
                     <div
                       key={item.id}
-                      className="bg-black w-[50px] h-[50px] rounded-lg flex justify-center items-center cursor-pointer"
+                      className="bg-secondary-600 w-[50px] h-[50px] rounded-lg flex justify-center items-center cursor-pointer"
                       onClick={() => onSelect(item)}
                     >
                       <Tooltip content={item.displayName} placement="top">
@@ -90,7 +125,8 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
                         />
                       </Tooltip>
                     </div>
-                  ))}
+                  ))
+                )}
               </div>
             </main>
           </section>
