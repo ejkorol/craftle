@@ -40,7 +40,7 @@ const RecipeTries = ({ tries, currentTry }: RecipeTriesProps) => {
             className = "tries__unused";
             break;
           default:
-            className = "";
+            className = "tries__unused";
         }
 
         return (
