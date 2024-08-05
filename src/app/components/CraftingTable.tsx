@@ -124,6 +124,21 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     const flattenTable = craftingTable.flat().map((item) => item?.name || "");
     const flattenRecipe = currentRecipe.flat().flat();
 
+    const tableIsEmpty = flattenTable.every(item => item === "");
+
+    if (tableIsEmpty) {
+      toast('Click a square to craft!', {
+        icon: '🪚',
+        style: {
+          border: '2px solid #fafafa',
+          padding: '16px',
+          backgroundColor: '#212121',
+          color: '#fafafa'
+        },
+      });
+      return;
+    };
+
     if (flattenTable.length !== flattenRecipe.length) {
       setIsMatch(false);
       setCurrentTry((prev) => (prev + 1) % tries.length);
