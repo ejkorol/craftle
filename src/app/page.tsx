@@ -62,6 +62,8 @@ const Home = () => {
             >
               <motion.div variants={fadeVariants}>
                 <Button
+                  href="/signin"
+                  as={Link}
                   className="border-primary w-40 hover:bg-primary hover:text-white"
                   radius="full"
                   variant="bordered"
