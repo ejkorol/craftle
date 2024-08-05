@@ -152,15 +152,16 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 };
 
   useEffect(() => {
+    handlePost();
     checkIfDailyCompleted();
-    // if (currentTry >= 0 && currentTry < tries.length) {
-    //   setTries((prevTries) =>
-    //     prevTries.map((item, idx) =>
-    //       idx === currentTry ? { ...item, success: item.success === null ? false : item.success } : item
-    //     )
-    //   );
-    // }
-  }, [currentTry, isMatch]);
+    if (currentTry >= 0 && currentTry < tries.length) {
+      setTries((prevTries) =>
+        prevTries.map((item, idx) =>
+          idx === currentTry ? { ...item, success: item.success === null ? false : item.success } : item
+        )
+      );
+    }
+  }, [currentTry, isMatch, isFailed]);
 
   const getRandomDelay = () => Math.random() * 0.5;
 
@@ -229,8 +230,8 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
     // Update tries with percentage
     setTries((prevTries) =>
       prevTries.map((item, idx) =>
-        idx === currentTry
-          ? { ...item, success: exactMatch, recipe: craftingTable, percentage }
+        idx === currentTry + 1
+          ? { ...item, success: exactMatch, recipe: craftingTable, percentage: percentage }
           : item
       )
     );
@@ -273,7 +274,6 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           idx === currentTry + 1 ? { ...item, success: true, recipe: craftingTable } : item
         )
       );
-      await getsession(tries, true);
       recipeSuccess.onOpen();
     } else {
       setCurrentTry((prev) => (prev + 1) % tries.length);
@@ -304,10 +304,15 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
     if (currentTry + 2 === 6) {
       setIsFailed(true);
-      await getsession(tries, false);
     };
+  };
 
-    return exactMatch;
+  const handlePost = async () => {
+    if (isFailed) {
+      await getsession(tries, false)
+    } else if (isMatch) {
+      await getsession(tries, true)
+    };
   };
 
   const handleBoxClick = (rowIndex: number, colIndex: number) => {
