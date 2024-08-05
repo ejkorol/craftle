@@ -8,7 +8,7 @@ import RecipeTryAttempt from "./RecipeAttempt";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { StatsModal } from "./StatsModal";
-import { getsession, setCookie, getCookie } from "./CraftingTableActions";
+import { getsession, getCookie } from "./CraftingTableActions";
 
 const animationVariants = {
   hidden: { scale: 0.8, opacity: 0 },
@@ -153,13 +153,13 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
   useEffect(() => {
     checkIfDailyCompleted();
-    if (currentTry >= 0 && currentTry < tries.length) {
-      setTries((prevTries) =>
-        prevTries.map((item, idx) =>
-          idx === currentTry ? { ...item, success: item.success === null ? false : item.success } : item
-        )
-      );
-    }
+    // if (currentTry >= 0 && currentTry < tries.length) {
+    //   setTries((prevTries) =>
+    //     prevTries.map((item, idx) =>
+    //       idx === currentTry ? { ...item, success: item.success === null ? false : item.success } : item
+    //     )
+    //   );
+    // }
   }, [currentTry, isMatch]);
 
   const getRandomDelay = () => Math.random() * 0.5;
@@ -273,8 +273,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
           idx === currentTry + 1 ? { ...item, success: true, recipe: craftingTable } : item
         )
       );
-      await setCookie(true, tries);
-      await getsession(tries);
+      await getsession(tries, true);
       recipeSuccess.onOpen();
     } else {
       setCurrentTry((prev) => (prev + 1) % tries.length);
@@ -305,8 +304,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
 
     if (currentTry + 2 === 6) {
       setIsFailed(true);
-      await setCookie(false, tries);
-      await getsession(tries);
+      await getsession(tries, false);
     };
 
     return exactMatch;

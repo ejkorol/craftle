@@ -84,8 +84,10 @@ const updateUserRanks = async (): Promise<void> => {
   }
 };
 
-export const getsession = async (tries: Try[]): Promise<void> => {
+export const getsession = async (tries: Try[], craftSuccess: boolean): Promise<void> => {
   const session = await auth();
+
+  await setCookie(craftSuccess, tries);
 
   console.log(session)
 
