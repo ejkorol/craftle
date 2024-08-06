@@ -35,7 +35,7 @@
 };
 
 .crafting__box {
-  @apply flex justify-center items-center border-solid border-3 border-secondary w-20 h-20 rounded-xl cursor-pointer hover:border-primary transition-all
+  @apply flex justify-center items-center border-solid border-3 border-secondary w-20 h-20 rounded-xl cursor-pointer lg:hover:border-primary lg:transition-all
 };
 
 .recipe__previous {
