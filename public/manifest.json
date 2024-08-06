@@ -1,8 +1,8 @@
 {
   "name": "Craftle",
   "short_name": "Craftle",
-  "theme_color": "#fff",
-  "background_color": "#fff",
+  "theme_color": "#212121",
+  "background_color": "#212121",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
