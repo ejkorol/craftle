@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 
 import NextImage from "next/image";
 import { useEffect, useState, useCallback } from "react";
+import { useTheme } from "next-themes";
 
 import { CircleX, ArrowUpRight, ClockArrowDown } from "lucide-react";
 
@@ -63,6 +64,8 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
 
   const [redirectTime, setRedirectTime] = useState(3);
   const [intervalId, setIntervalId] = useState<any>(null);
+  const { theme } = useTheme();
+  console.log(theme)
 
   useEffect(() => {
     // Clear the interval if the component unmounts
@@ -90,7 +93,7 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
       case "try":
       return (
         <Button
-          color="secondary"
+          color={ theme === 'light' ? 'primary' : 'secondary'}
           disabled
           isIconOnly
           className="text-lg font-mono"
@@ -106,8 +109,8 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
         <div className="relative w-full h-full">
           <Slider
             classNames={{
-                base: 'w-full',
-                track: 'bg-transparent'
+              track: 'bg-transparent',
+              filler: 'bg-transparent'
             }}
             size="lg"
             aria-label="Player progress"
@@ -211,7 +214,11 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
       <ModalContent>
         <ModalHeader className="flex items-center justify-between">
           <div className="flex gap-4 items-center">
-            <Image radius="none" isBlurred src="/icons/craftle-logo-light.svg" as={NextImage} width={45} height={45} alt="logo" />
+            { theme === 'dark' ?
+              <Image radius="none" isBlurred src="/icons/craftle-logo-light.svg" as={NextImage} width={45} height={45} alt="logo" />
+              :
+              <Image radius="none" isBlurred src="/icons/craftle-logo.svg" as={NextImage} width={45} height={45} alt="logo" />
+            }
             <h1 className="text-4xl font-serif font-bold py-4">Craftle</h1>
           </div>
           <Button

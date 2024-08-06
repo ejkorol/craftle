@@ -6,6 +6,21 @@
   @apply flex m-auto max-w-[288px] max-h-[288px] justify-between mb-12 items-center
 };
 
+.tries__label {
+  @apply text-center mb-6 font-mono uppercase text-secondary mt-[-6rem] transition-all
+}
+
+.tries__label--visible {
+  opacity: 1;
+  visibility: visible;
+  @apply md:invisible
+}
+
+.tries__label--invisible {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .tries__failed {
   @apply flex h-5 w-5 bg-danger rounded-md cursor-pointer
 };

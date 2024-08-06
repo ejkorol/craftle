@@ -52,6 +52,18 @@ const config: Config = {
           primary: {
             DEFAULT: '#212121',
             foreground: '#FAFAFA'
+          },
+          secondary: {
+            400: '#bdbdbd',
+            500: '#bdbdbd',
+            600: '#9e9e9e',
+            DEFAULT: '#bdbdbd'
+          },
+          danger: {
+            DEFAULT: '#D14852'
+          },
+          success: {
+            DEFAULT: '#5B8B32'
           }
         }
       }
