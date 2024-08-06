@@ -384,8 +384,19 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
             exit={{ opacity: 0, scale: 0.4 }}
             animate={{ opacity: isFailed || dailyCompleted.completed ? 0 : 1, scale: isFailed ? 0.4 : 1 }}
             transition={{ duration: 0.4, delay: 1.75 }}
+            className="invisible md:visible mb-[-8rem]"
           >
-            <RecipeTries tries={tries} currentTry={currentTry} />
+            <RecipeTries tries={tries} currentTry={currentTry}/>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: !isFailed ? 0 : 1, scale: !isFailed ? 0.4 : 1 }}
+            exit={{ opacity: 0, scale: 0.4 }}
+            animate={{ opacity: isFailed || dailyCompleted.completed ? 0 : 1, scale: isFailed ? 0.4 : 1 }}
+            transition={{ duration: 0.4, delay: 1.75 }}
+            className="visible md:invisible"
+          >
+              <p className={ currentTry !== -1 ? 'tries__label tries__label--visible' : 'tries__label tries__label--invisible' }>Tap a try to preview</p>
+            <RecipeTries tries={tries} currentTry={currentTry}/>
           </motion.div>
         <div className="crafting">
           <div className="crafting__table">
