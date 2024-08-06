@@ -77,7 +77,7 @@ const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessPro
         <ModalBody>
           <section className="flex flex-col h-svh w-full items-center justify-center text-center">
             <Confetti active={isExploding} config={config} />
-            <Image isBlurred src={`http://minecraft-api.minko.industries/images/1.19/${data.image}.png`} alt={data.displayName} width={100} height={100} />
+            <Image isBlurred src={`/api/fetch-image?url=${encodeURIComponent(`http://minecraft-api.minko.industries${data.image}`)}`} alt={data.displayName} width={100} height={100} />
             <h1 className="text-4xl font-serif font-bold tracking-wide my-10">{data.displayName}</h1>
             <h3 className="text-3xl font-serif font-medium tracking-normal">You crafted it in just<br/>{data.tries} {data.tries === 1 ? 'recipe' : 'recipes'}!</h3>
             <p className="text-xl font-serif font-medium tracking-normal my-10">
