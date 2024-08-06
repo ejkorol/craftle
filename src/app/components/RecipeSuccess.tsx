@@ -69,10 +69,12 @@ const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessPro
       onOpenChange={onOpenChange}
       size="full"
       backdrop="blur"
-      className="bg-dark"
+      className="bg-dark cursor-pointer"
       shadow="lg"
+      onClick={onClose}
     >
       <ModalContent>
+        {(onClose) => (
         <ModalBody>
           <section className="flex flex-col h-svh w-full items-center justify-center text-center">
             <Confetti active={isExploding} config={config} />
@@ -90,6 +92,7 @@ const RecipeSuccess = ({ isOpen, onOpenChange, onClose, data }: RecipeSuccessPro
             </p>
           </section>
         </ModalBody>
+        )}
       </ModalContent>
     </Modal>
   );
