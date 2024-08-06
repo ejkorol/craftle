@@ -37,12 +37,43 @@ cd craftle
 npm install
 ```
 
-5. **Run the Development Server**
+4. **Update ENV**
+
+```env
+# DATABASE
+DATABASE_URL="mysql://johndoe:randompassword@localhost:3306/mydb"
+
+# URLS
+API_URL=""
+
+# NEXT AUTH
+AUTH_SECRET=""
+
+# OAUTH GITHUB
+AUTH_GITHUB_ID={CLIENT_ID}
+AUTH_GITHUB_SECRET={CLIENT_SECRET}
+
+# OAUTH GOOGLE
+AUTH_GOOGLE_ID={CLIENT_ID}
+AUTH_GOOGLE_SECRET={CLIENT_SECRET}
+```
+
+5. **Setup Prisma**
+
+```bash
+npx prisma migrate dev
+```
+
+```bash
+npx prisma generate
+```
+
+6. **Run the Development Server**
 
 ```bash
 npm run dev
 ```
 
-6. **Open Your Browser**
+7. **Open Your Browser**
 
 Navigate to `http://localhost:3000` to start playing Craftle.
