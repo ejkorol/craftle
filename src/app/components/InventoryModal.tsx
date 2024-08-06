@@ -48,7 +48,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
   }, [query, items]);
 
   const observer = useRef<IntersectionObserver | null>(null);
-  const lastItemRef = useCallback((node: Element) => {
+  const lastItemRef = useCallback((node: any) => {
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
