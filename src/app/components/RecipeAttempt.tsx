@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-interface Attempt {
+export interface Attempt {
   try: number;
   success: boolean | null;
   recipe: RecipeAttempt[][]

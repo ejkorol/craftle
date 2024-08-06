@@ -57,7 +57,7 @@ const TodaysHintModal = ({ isOpen, onClose, onOpenChange }: TodaysHintModalProps
         <ModalBody className="px-8">
           <p className="font-mono text-lg whitespace-pre-wrap">{`${hint}`}</p>
           <Spacer y={4}/>
-          <p className="font-mono text-sm tracking-wide text-secondary italic">
+          <p className="font-mono text-sm tracking-wide text-primary/40 dark:text-secondary italic">
             You have 6 chances to guess a recipe;
             <br/>
             each row can (and should be) be used,
@@ -66,7 +66,7 @@ const TodaysHintModal = ({ isOpen, onClose, onOpenChange }: TodaysHintModalProps
           </p>
         </ModalBody>
         <ModalFooter className="flex items-center justify-between">
-          <h3 className="mt-4 font-medium text-secondary italic tracking-wide">{date}</h3>
+          <h3 className="mt-4 font-medium text-primary/40 dark:text-secondary italic tracking-wide">{date}</h3>
         </ModalFooter>
       </ModalContent>
     </Modal>

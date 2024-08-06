@@ -68,7 +68,7 @@ const NavBar = async () => {
               }}>
               <Button
                 radius="full"
-                className="border-primary hover:bg-primary hover:text-black transition-all"
+                className="border-primary hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-black transition-all"
                 size="lg"
                 variant="bordered"
                   type="submit"
@@ -80,7 +80,7 @@ const NavBar = async () => {
           {!session && (
             <Button
               radius="full"
-              className="border-primary hover:bg-primary hover:text-black transition-all"
+              className="border-primary hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-black transition-all"
               size="lg"
               variant="bordered"
               href="/api/auth/signin"
@@ -97,12 +97,12 @@ const NavBar = async () => {
           <h2 className="text-4xl font-serif font-medium">Menu</h2>
           <NavbarMenuItem className="flex items-center gap-2">
             <HintButton>
-              <h3 className="text-2xl font-medium text-secondary">Hint</h3>
+              <h3 className="text-2xl hover:text-primary font-medium text-secondary">Hint</h3>
             </HintButton>
           </NavbarMenuItem>
           <NavbarMenuItem className="flex items-center gap-2">
             <LeaderboardButton>
-              <h3 className="text-2xl font-medium text-secondary">Leaderboard</h3>
+              <h3 className="text-2xl hover:text-primary font-medium text-secondary">Leaderboard</h3>
             </LeaderboardButton>
           </NavbarMenuItem>
           {session && (
