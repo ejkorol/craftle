@@ -120,7 +120,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
                         <Image
                           height={30}
                           width={30}
-                          src={`http://minecraft-api.minko.industries${item.image}`}
+                          src={`/api/fetch-image?url=${encodeURIComponent(`http://minecraft-api.minko.industries${item.image}`)}`}
                           alt={item.displayName}
                         />
                       </Tooltip>

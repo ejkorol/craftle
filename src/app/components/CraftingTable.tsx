@@ -406,7 +406,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
                       <img
                         height={40}
                         width={40}
-                        src={`http://minecraft-api.minko.industries${box.image}`}
+                        src={`/api/fetch-image?url=${encodeURIComponent(`http://minecraft-api.minko.industries${box.image}`)}`}
                         alt={`item ${box.name}`}
                       />
                     )}
@@ -518,7 +518,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
               <img
                 height={30}
                 width={30}
-                src={`http://minecraft-api.minko.industries${item.image}`}
+                src={`/api/fetch-image?url=${encodeURIComponent(`http://minecraft-api.minko.industries${item.image}`)}`}
                 alt="test"
               />
               </Tooltip>

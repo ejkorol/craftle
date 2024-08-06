@@ -58,7 +58,7 @@ const RecipeAttempt = ({ attempts, currentTry }: RecipeAttemptProps) => {
                 <img
                   height={30}
                   width={30}
-                  src={`http://minecraft-api.minko.industries${col.image}`}
+                  src={`/api/fetch-image?url=${encodeURIComponent(`http://minecraft-api.minko.industries${col.image}`)}`}
                   alt={`item ${col.name}`}
                 />
               )}
