@@ -59,6 +59,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
       shadow="lg"
       hideCloseButton
       scrollBehavior="inside"
+      shouldBlockScroll={false}
     >
       <ModalContent>
         <ModalHeader className="flex items-center justify-between">
