@@ -173,9 +173,6 @@ export const getsession = async (tries: Try[], craftSuccess: boolean): Promise<v
   });
 
   const { longestStreak, currentStreak } = calculateWinStreaks(userGames);
-
-  await setCookie(craftSuccess, tries, totalUserGames, currentStreak, longestStreak, totalUserGamesWon);
-
   const userId = user.id;
   const averagePercentage = calculateAveragePercentage(tries);
   const newAverage = user.avgAccuracy ? calculateAverage(averagePercentage, user.avgAccuracy) : averagePercentage;
@@ -202,6 +199,8 @@ export const getsession = async (tries: Try[], craftSuccess: boolean): Promise<v
     update: { avg: newAverage },
     create: { userId, rank: 0, avg: newAverage },
   });
+
+  await setCookie(craftSuccess, tries, totalUserGames, currentStreak, longestStreak, totalUserGamesWon);
 
   console.log('Session processed:', session);
   console.log('User:', user);
