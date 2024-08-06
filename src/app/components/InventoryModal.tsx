@@ -95,10 +95,18 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
             placeholder="Search"
             onChange={(e) => setQuery(e.target.value)}
             startContent={
-              <Search className="text-secondary" height={24} width={24} />
+              <Search className="text-secondary-600 dark:text-secondary " height={24} width={24} />
             }
           />
-          <Button onPress={handleClear} size="lg" color="danger" variant="shadow" isIconOnly><Trash height={20} width={20} className="text-primary" /></Button>
+          <Button
+            onPress={handleClear} 
+            size="lg" 
+            color="danger" 
+            variant="shadow" 
+            isIconOnly
+            >
+              <Trash height={20} width={20} className="text-white dark:text-primary" />
+            </Button>
           </div>
           <section className="flex gap-4">
             <main className="w-full mb-4 mt-2">
@@ -107,7 +115,7 @@ const InventoryModal = ({ onSelect, items, isOpen, onClose, onOpenChange }: Inve
                     <div
                       className="bg-secondary-600 w-[50px] h-[50px] rounded-lg flex justify-center items-center"
                     >
-                      <CircleSlash2 height={30} width={30} className="text-primary" />
+                      <CircleSlash2 height={30} width={30} className="text-white dark:text-primary" />
                     </div>
                 ) : (
                   filteredItems.map((item: Item) => (
