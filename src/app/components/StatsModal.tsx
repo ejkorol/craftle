@@ -110,7 +110,6 @@ export const StatsModal = ({ isOpen, onClose, onOpenChange, tries, stats }: Stat
           <Slider
             classNames={{
               track: 'bg-transparent',
-              filler: 'bg-transparent'
             }}
             size="lg"
             aria-label="Player progress"
