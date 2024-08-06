@@ -514,7 +514,7 @@ const CraftingTable = ({ items, recipe }: CraftingTableProps) => {
         />
       </div>
     </section>
-      <section className="absolute bottom-0 mb-32">
+      <section className="absolute bottom-0 mb-12 md:mb-32">
         {foundItems.length !== 0 && !dailyCompleted.completed && (
           foundItems.map((item, idx) => (
             <motion.div
