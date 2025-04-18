@@ -1,5 +1,7 @@
 # Craftle
 
+<img width="431" alt="Screenshot 2025-04-18 at 18 11 01" src="https://github.com/user-attachments/assets/0dd299e4-3792-4896-965d-82db7ce3a292" />
+
 **Craftle** is a minimalist Minecraft-themed Wordle-like clone, inspired by the popular New York Times game.
 
 ## Features
